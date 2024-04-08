@@ -1,5 +1,5 @@
-# Proyecto ISW - 2023/2
-# Tarjeta Vecino
+# Proyecto ISW - 2024/1
+# Perrines UBB
 
 ## Integrantes
 
