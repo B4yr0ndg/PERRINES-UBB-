@@ -3,8 +3,8 @@
 const { respondSuccess, respondError } = require("../utils/resHandler");
 const CitaVeterinarioService = require("../services/citaVet.service");
 const { handleError } = require("../utils/errorHandler");
-const userService = require("../services/user.service");
-const moment = require('moment');
+// const userService = require("../services/user.service");
+const moment = require("moment");
 
 /**
  * @name getCitaVeterinario
@@ -34,30 +34,35 @@ async function createCitaVeterinario(req, res) {
     const { fecha, hora, mascota, motivo } = req.body;
 
     // Verificar que la fecha no sea antes de hoy
-    const fechaActual = moment().startOf('day');
-    const fechaCita = moment(fecha, 'YYYY-MM-DD');
-    if (fechaCita.isBefore(fechaActual, 'day')) {
-        return respondError(req, res, 400, 'La fecha de la cita no puede ser antes de hoy.');
+    const fechaActual = moment().startOf("day");
+    const fechaCita = moment(fecha, "YYYY-MM-DD");
+    if (fechaCita.isBefore(fechaActual, "day")) {
+        return respondError(req, res, 400, "La fecha de la cita no puede ser antes de hoy.");
     }
 
     // Verificar que la hora no sea antes de la hora actual si la fecha es hoy
-    if (fechaCita.isSame(fechaActual, 'day')) {
-        const horaActual = moment().format('HH:mm');
+    if (fechaCita.isSame(fechaActual, "day")) {
+        const horaActual = moment().format("HH:mm");
         if (hora < horaActual) {
-            return respondError(req, res, 400, 'La hora de la cita no puede ser antes de la hora actual.');
+            return respondError(req, res, 400, "la hora ingresada no puede ser antes a la actual.");
         }
     }
 
-    const nuevaCitaVeterinario = await CitaVeterinarioService.createCitaVeterinario({ fecha, hora, mascota, motivo });
+    const nuevaCitaVeterinario = await CitaVeterinarioService.createCitaVeterinario({
+        fecha,
+        hora,
+        mascota,
+        motivo,
+    });
     nuevaCitaVeterinario === null
         ? respondError(
-            req,
-            res,
-            400,
-            "Error en la validacion de datos",
-            "Bad Request",
-            { message: "Verifique los datos ingresados" },
-          )
+                req,
+                res,
+                400,
+                "Error en la validacion de datos",
+                "Bad Request",
+                { message: "Verifique los datos ingresados" },
+            )
         : respondSuccess(req, res, 201, nuevaCitaVeterinario);
   } catch (error) {
     handleError(
