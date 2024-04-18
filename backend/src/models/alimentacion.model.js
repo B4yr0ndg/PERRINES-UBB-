@@ -13,12 +13,19 @@ const alimentacionSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  fechaAlimento:{
+  hora:{
     type: Date,
-    default: Date.now
+    required: true
   },
 });
 
-const Alimentacion = mongoose.model('Alimentacion', alimentacionSchema);
+// Validación personalizada para verificar si ya existe una alimentación registrada en la misma hora
+AlimentacionSchema.pre('save', async function(next) {
+  const existeAlimentacion = await mongoose.model('Alimentacion').findOne({ hora: this.hora });
+  if (existeAlimentacion) {
+    throw new Error('Ya existe una alimentación registrada en esta hora');
+  }
+  next();
+});
 
-module.exports = Alimentacion;
+module.exports = mongoose.model('Alimentacion', AlimentacionSchema);
