@@ -1,10 +1,10 @@
 "use strict";
 
-const { respondSuccess, respondError } = require("../utils/resHandler");
-const CitaVeterinarioService = require("../services/citaVet.service");
-const { handleError } = require("../utils/errorHandler");
+import { respondSuccess, respondError } from "../utils/resHandler.js";
+import { CitaVeterinarioService } from "../services/citaVet.services.js";
+import { handleError } from "../utils/errorHandler.js";
 // const userService = require("../services/user.service");
-const moment = require("moment");
+import moment from "moment";
 
 /**
  * @name getCitaVeterinario
@@ -12,7 +12,7 @@ const moment = require("moment");
  * @param req {Request}
  * @param res {Response}
  */
-async function getCitaVeterinario(req, res) {
+export async function getCitaVeterinario(req, res) {
   try {
     const cita = await CitaVeterinarioService.getCitaVeterinario();
     cita.length === 0
@@ -29,9 +29,9 @@ async function getCitaVeterinario(req, res) {
  * @param req {Request}
  * @param res {Response}
  */
-async function createCitaVeterinario(req, res) {
+export async function createCitaVeterinario(req, res) {
   try {
-    const { fecha, hora, mascota, motivo } = req.body;
+    const { fecha, hora } = req.body;
 
     // Verificar que la fecha no sea antes de hoy
     const fechaActual = moment().startOf("day");
@@ -48,12 +48,8 @@ async function createCitaVeterinario(req, res) {
         }
     }
 
-    const nuevaCitaVeterinario = await CitaVeterinarioService.createCitaVeterinario({
-        fecha,
-        hora,
-        mascota,
-        motivo,
-    });
+    const nuevaCitaVeterinario = 
+    await CitaVeterinarioService.createCitaVeterinario(req.body);
     nuevaCitaVeterinario === null
         ? respondError(
                 req,
@@ -79,7 +75,7 @@ async function createCitaVeterinario(req, res) {
  * @param req {Request}
  * @param res {Response}
  */
-async function getCitaVeterinarioById(req, res) {
+export async function getCitaVeterinarioById(req, res) {
   try {
     const { id } = req.params;
     
@@ -109,7 +105,7 @@ async function getCitaVeterinarioById(req, res) {
  * @param req {Request}
  * @param res {Response}
  */
-async function updateCitaVeterinario(req, res) {
+export async function updateCitaVeterinario(req, res) {
   try {
     const { id } = req.params;
       const cita = await CitaVeterinarioService.updateCitaVeterinario(
@@ -141,7 +137,7 @@ async function updateCitaVeterinario(req, res) {
  * @param req {Request}
  * @param res {Response}
  */
-async function deleteCitaVeterinario(req, res) {
+export async function deleteCitaVeterinario(req, res) {
   try {
     const { id } = req.params;
       const cita = await CitaVeterinarioService.deleteCitaVeterinario(id);
@@ -164,10 +160,3 @@ async function deleteCitaVeterinario(req, res) {
   }
 }
 
-module.exports = {
-  getCitaVeterinario,
-  createCitaVeterinario,
-  getCitaVeterinarioById,
-  updateCitaVeterinario,
-  deleteCitaVeterinario,
-};

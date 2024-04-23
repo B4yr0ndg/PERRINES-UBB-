@@ -1,20 +1,15 @@
 "use strict";
 
-const CitaVeterinario = require("../models/citaVet.model.js");
-const { handleError } = require("../utils/errorHandler");
-const {
-  citaVeterinarioBodySchema,
-} = require("../schema/citaVet.schema.js");
+import CitaVeterinario from "../models/citaVet.model.js";
+import { handleError } from "../utils/errorHandler.js";
+import citaVeterinariaBodySchema from "../schema/citaVet.schema.js";
 
 /**
  * @typedef CitaVeterinario
  * @property {string} _id
- * @property {string} veterinario
  * @property {string} mascota
  * @property {Date} fecha
  * @property {string} motivo
- * @property {string} observaciones
- * @property {boolean} invalid
  */
 
 /**
@@ -38,7 +33,7 @@ async function getCitaVeterinario() {
  */
 async function createCitaVeterinario(citaVeterinario) {
   try {
-    const { error } = citaVeterinarioBodySchema.validate(citaVeterinario);
+    const { error } = citaVeterinariaBodySchema.validate(citaVeterinario);
     if (error) {
       return null;
     }
@@ -72,7 +67,7 @@ async function getCitaVeterinarioById(id) {
  */
 async function updateCitaVeterinario(id, citaVeterinario) {
   try {
-    const { error } = citaVeterinarioBodySchema.validate(citaVeterinario);
+    const { error } = citaVeterinariaBodySchema.validate(citaVeterinario);
     if (error) {
       return null;
     }
@@ -96,7 +91,7 @@ async function deleteCitaVeterinario(id) {
   }
 }
 
-module.exports = {
+export const CitaVeterinarioService = {
   getCitaVeterinario,
   createCitaVeterinario,
   getCitaVeterinarioById,
