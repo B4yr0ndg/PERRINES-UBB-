@@ -1,3 +1,4 @@
+const alimentacionSchema = require('../schemas/alimentacion.schema');
 const Alimentacion = require('../models/Alimentacion');
 
 // Obtener todas las alimentaciones
@@ -28,23 +29,34 @@ exports.obtenerAlimentacionPorId = async (req, res) => {
 // Crear una nueva alimentación
 exports.crearAlimentacion = async (req, res) => {
   try {
+    // Validar los datos de entrada
+    const { error } = alimentacionSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ mensaje: error.details[0].message });
+    }
+
     const { tipoAlimento, cantidad, frecuencia, hora } = req.body;
     const nuevaAlimentacion = new Alimentacion({ tipoAlimento, cantidad, frecuencia, hora });
     await nuevaAlimentacion.save();
     res.status(201).json({ mensaje: 'Alimentación creada correctamente', alimentacion: nuevaAlimentacion });
   } catch (error) {
     console.error(error);
-    let mensajeError = 'Error al crear la alimentación';
     if (error.message.includes('Ya existe una alimentación registrada en esta hora')) {
-      mensajeError = 'Ya existe una alimentación registrada en esta hora';
+      return res.status(400).json({ mensaje: 'Ya existe una alimentación registrada en esta hora' });
     }
-    res.status(400).json({ mensaje: mensajeError });
+    res.status(500).json({ mensaje: 'Error al crear la alimentación' });
   }
 };
 
 // Actualizar una alimentación existente
 exports.actualizarAlimentacion = async (req, res) => {
   try {
+    // Validar los datos de entrada
+    const { error } = alimentacionSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ mensaje: error.details[0].message });
+    }
+
     const { tipoAlimento, cantidad, frecuencia, hora } = req.body;
     const alimentacionActualizada = await Alimentacion.findByIdAndUpdate(
       req.params.id,
