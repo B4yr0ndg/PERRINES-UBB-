@@ -36,9 +36,7 @@ export async function createCitaVeterinario(req, res) {
     // Verificar que la fecha no sea antes de hoy
     const fechaActual = moment().startOf("day");
     const fechaCita = moment(fecha, "YYYY-MM-DD");
-    if (fechaCita.isBefore(fechaActual, "day")) {
-        return respondError(req, res, 400, "La fecha de la cita no puede ser antes de hoy.");
-    }
+    
 
     // Verificar que la hora no sea antes de la hora actual si la fecha es hoy
     if (fechaCita.isSame(fechaActual, "day")) {

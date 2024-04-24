@@ -1,12 +1,26 @@
-const express = require('express');
+import express from "express";
 const router = express.Router();
-const alimentacionController = require('../controllers/alimentacion.controller');
+import {
+    obtenerAlimentaciones,
+    obtenerAlimentacionPorId,
+    crearAlimentacion,
+    actualizarAlimentacion,
+    eliminarAlimentacion,
+} from "../controllers/alimentacion.controller.js";
 
-// Rutas CRUD para la alimentación de perros
-router.post('/', alimentacionController.createAlimentacion);
-router.get('/', alimentacionController.getAllAlimentacion);
-router.get('/:id', alimentacionController.getAlimentacionById);
-router.put('/:id', alimentacionController.updateAlimentacion);
-router.delete('/:id', alimentacionController.deleteAlimentacion);
+// Obtener todas las alimentaciones
+router.get("/alimentaciones", obtenerAlimentaciones);
 
-module.exports = router;
+// Obtener una alimentación por su ID
+router.get("/alimentaciones/:id", obtenerAlimentacionPorId);
+
+// Crear una nueva alimentación
+router.post("/alimentaciones", crearAlimentacion);
+
+// Actualizar una alimentación existente
+router.put("/alimentaciones/:id", actualizarAlimentacion);
+
+// Eliminar una alimentación existente
+router.delete("/alimentaciones/:id", eliminarAlimentacion);
+
+export default router;

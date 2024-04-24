@@ -14,6 +14,8 @@ import authenticationMiddleware from "../middlewares/authentication.middleware.j
 /** Enrutador de citas veterinarias */
 import citaVeterinarioRoutes from "./citaVet.routes.js";
 
+import alimentacionRoutes from "./alimentacion.routes.js";
+
 /** Instancia del enrutador */
 const router = Router();
 
@@ -23,6 +25,8 @@ router.use("/users", authenticationMiddleware, userRoutes);
 router.use("/auth", authRoutes);
 // Define las rutas para las citas veterinarias /api/citas
 router.use("/citas", citaVeterinarioRoutes);
+// define las rutas para las alimentaciones /api/alimentaciones
+router.use("/al", alimentacionRoutes);
 
 
 // Exporta el enrutador

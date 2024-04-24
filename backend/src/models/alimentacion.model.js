@@ -1,24 +1,28 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+// import Joi from 'joi';
 
+// Definir el esquema de la alimentación
 const alimentacionSchema = new mongoose.Schema({
   tipoAlimento: {
     type: String,
-    required: true
+    required: true,
   },
   cantidad: {
     type: Number,
-    required: true
+    required: true,
   },
   frecuencia: {
     type: String,
-    required: true
+    required: true,
   },
-  fechaAlimento:{
-    type: Date,
-    default: Date.now
+  hora: {
+    type: String,
+    required: true,
   },
 });
 
-const Alimentacion = mongoose.model('Alimentacion', alimentacionSchema);
+// Modelo de la alimentación
+const Alimentacion = mongoose.model("Alimentacion", alimentacionSchema);
 
-module.exports = Alimentacion;
+export default { Alimentacion };
+
