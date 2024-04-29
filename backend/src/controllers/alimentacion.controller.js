@@ -1,35 +1,45 @@
-const alimentacionSchema = require('../schemas/alimentacion.schema');
-const Alimentacion = require('../models/Alimentacion');
+"use strict";
 
-// Obtener todas las alimentaciones
+import alimentacionSchema from "../schemas/alimentacion.schema";
+import Alimentacion from "../models/Alimentacion";
+
 exports.obtenerAlimentaciones = async (req, res) => {
   try {
     const alimentaciones = await Alimentacion.find();
     res.json(alimentaciones);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al obtener las alimentaciones' });
+    res.status(500).json({ mensaje: "Error al obtener las alimentaciones" });
   }
 };
 
-// Obtener una alimentación por su ID
+/**
+ * Obtener una alimentación por su ID.
+ *
+ * @param {Object} req - Objeto de solicitud.
+ * @param {Object} res - Objeto de respuesta.
+ * @returns {Object} - Alimentación encontrada.
+ */
 exports.obtenerAlimentacionPorId = async (req, res) => {
   try {
     const alimentacion = await Alimentacion.findById(req.params.id);
     if (!alimentacion) {
-      return res.status(404).json({ mensaje: 'Alimentación no encontrada' });
+      return res.status(404).json({ mensaje: "Alimentación no encontrada" });
     }
     res.json(alimentacion);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al obtener la alimentación' });
+    res.status(500).json({ mensaje: "Error al obtener la alimentación" });
   }
 };
 
-// Crear una nueva alimentación
+/**
+ * Crear una nueva alimentación.
+ *
+ * @param {Object} req - Objeto de solicitud.
+ * @param {Object} res - Objeto de respuesta.
+ * @returns {Object} - Alimentación creada.
+ */
 exports.crearAlimentacion = async (req, res) => {
   try {
-    // Validar los datos de entrada
     const { error } = alimentacionSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ mensaje: error.details[0].message });
@@ -37,21 +47,22 @@ exports.crearAlimentacion = async (req, res) => {
 
     const { tipoAlimento, cantidad, frecuencia, hora } = req.body;
     const nuevaAlimentacion = new Alimentacion({ tipoAlimento, cantidad, frecuencia, hora });
-    await nuevaAlimentacion.save();
-    res.status(201).json({ mensaje: 'Alimentación creada correctamente', alimentacion: nuevaAlimentacion });
+    const alimentacionGuardada = await nuevaAlimentacion.save();
+    res.status(201).json(alimentacionGuardada);
   } catch (error) {
-    console.error(error);
-    if (error.message.includes('Ya existe una alimentación registrada en esta hora')) {
-      return res.status(400).json({ mensaje: 'Ya existe una alimentación registrada en esta hora' });
-    }
-    res.status(500).json({ mensaje: 'Error al crear la alimentación' });
+    res.status(500).json({ mensaje: "Error al crear la alimentación" });
   }
 };
 
-// Actualizar una alimentación existente
+/**
+ * Actualizar una alimentación existente.
+ *
+ * @param {Object} req - Objeto de solicitud.
+ * @param {Object} res - Objeto de respuesta.
+ * @returns {Object} - Alimentación actualizada.
+ */
 exports.actualizarAlimentacion = async (req, res) => {
   try {
-    // Validar los datos de entrada
     const { error } = alimentacionSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ mensaje: error.details[0].message });
@@ -61,28 +72,34 @@ exports.actualizarAlimentacion = async (req, res) => {
     const alimentacionActualizada = await Alimentacion.findByIdAndUpdate(
       req.params.id,
       { tipoAlimento, cantidad, frecuencia, hora },
-      { new: true, runValidators: true }
+      { new: true },
     );
+
     if (!alimentacionActualizada) {
-      return res.status(404).json({ mensaje: 'Alimentación no encontrada' });
+      return res.status(404).json({ mensaje: "Alimentación no encontrada" });
     }
-    res.json({ mensaje: 'Alimentación actualizada correctamente', alimentacion: alimentacionActualizada });
+
+    res.json(alimentacionActualizada);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al actualizar la alimentación' });
+    res.status(500).json({ mensaje: "Error al actualizar la alimentación" });
   }
 };
 
-// Eliminar una alimentación existente
+/**
+ * Eliminar una alimentación existente.
+ * @param {Object} req - Objeto de solicitud.
+ * @param {Object} res - Objeto de respuesta.
+ * @returns {Object} - Alimentación eliminada.
+ */
+
 exports.eliminarAlimentacion = async (req, res) => {
   try {
     const alimentacionEliminada = await Alimentacion.findByIdAndDelete(req.params.id);
     if (!alimentacionEliminada) {
-      return res.status(404).json({ mensaje: 'Alimentación no encontrada' });
+      return res.status(404).json({ mensaje: "Alimentación no encontrada" });
     }
-    res.json({ mensaje: 'Alimentación eliminada correctamente', alimentacion: alimentacionEliminada });
+    res.json(alimentacionEliminada);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ mensaje: 'Error al eliminar la alimentación' });
+    res.status(500).json({ mensaje: "Error al eliminar la alimentación" });
   }
 };

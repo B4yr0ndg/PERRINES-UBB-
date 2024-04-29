@@ -1,20 +1,19 @@
-const express = require('express');
-const router = express.Router();
-const alimentacionController = require('../controllers/alimentacionController');
+import express from "express";
+import alimentacionController from "../controllers/alimentacionController";
 
-// Obtener todas las alimentaciones
-router.get('/alimentaciones', alimentacionController.obtenerAlimentaciones);
+const router = express.Router();
+router.get("/alimentaciones", alimentacionController.obtenerAlimentaciones);
 
 // Obtener una alimentación por su ID
-router.get('/alimentaciones/:id', alimentacionController.obtenerAlimentacionPorId);
+router.get("/alimentaciones/:id", alimentacionController.obtenerAlimentacionPorId);
 
 // Crear una nueva alimentación
-router.post('/alimentaciones', alimentacionController.crearAlimentacion);
+router.post("/alimentaciones", alimentacionController.crearAlimentacion);
 
 // Actualizar una alimentación existente
-router.put('/alimentaciones/:id', alimentacionController.actualizarAlimentacion);
+router.put("/alimentaciones/:id", alimentacionController.actualizarAlimentacion);
 
 // Eliminar una alimentación existente
-router.delete('/alimentaciones/:id', alimentacionController.eliminarAlimentacion);
+router.delete("/alimentaciones/:id", alimentacionController.eliminarAlimentacion);
 
-module.exports = router;
+export default router;
