@@ -7,6 +7,7 @@ const citaVeterinariaBodySchema = Joi.object({
   mascota: Joi.string().required(),
   fecha: Joi.date().required(), 
   motivo: Joi.string().required(),
+  email: Joi.string().email().required(),
 });
 
 export default citaVeterinariaBodySchema;
