@@ -1,6 +1,6 @@
 "use strict";
 
-import alimentacionSchema from "../schemas/alimentacion.schema";
+import alimentacionValidationSchema from "../schemas/alimentacion.schema";
 import Alimentacion from "../models/Alimentacion";
 
 exports.obtenerAlimentaciones = async (req, res) => {
@@ -40,13 +40,13 @@ exports.obtenerAlimentacionPorId = async (req, res) => {
  */
 exports.crearAlimentacion = async (req, res) => {
   try {
-    const { error } = alimentacionSchema.validate(req.body);
+    const { error } = alimentacionValidationSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ mensaje: error.details[0].message });
     }
 
-    const { tipoAlimento, cantidad, frecuencia, hora } = req.body;
-    const nuevaAlimentacion = new Alimentacion({ tipoAlimento, cantidad, frecuencia, hora });
+    const { tipoAlimento, cantidad, frecuencia, horario } = req.body;
+    const nuevaAlimentacion = new Alimentacion({ tipoAlimento, cantidad, frecuencia, horario });
     const alimentacionGuardada = await nuevaAlimentacion.save();
     res.status(201).json(alimentacionGuardada);
   } catch (error) {
@@ -63,15 +63,15 @@ exports.crearAlimentacion = async (req, res) => {
  */
 exports.actualizarAlimentacion = async (req, res) => {
   try {
-    const { error } = alimentacionSchema.validate(req.body);
+    const { error } = alimentacionValidationSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ mensaje: error.details[0].message });
     }
 
-    const { tipoAlimento, cantidad, frecuencia, hora } = req.body;
+    const { tipoAlimento, cantidad, frecuencia, horario } = req.body;
     const alimentacionActualizada = await Alimentacion.findByIdAndUpdate(
       req.params.id,
-      { tipoAlimento, cantidad, frecuencia, hora },
+      { tipoAlimento, cantidad, frecuencia, horario },
       { new: true },
     );
 
