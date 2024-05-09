@@ -1,7 +1,7 @@
 import Joi from "joi";
 
 // Esquema de validación para la creación y actualización de alimentaciones
-const alimentacionSchema = Joi.object({
+const alimentacionBodySchema = Joi.object({
   perroId: Joi.string().required().messages({
     "string.empty": "El id del perro no puede estar vacío.",
     "any.required": "El id del perro es obligatorio.",
@@ -30,4 +30,4 @@ const alimentacionSchema = Joi.object({
   }),
 });
 
-export default alimentacionSchema;
+export default alimentacionBodySchema;

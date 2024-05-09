@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import alimentacionValidationSchema from "./alimentacion.schema";
 
 // Definir el esquema de la alimentación
 const alimentacionSchema = new mongoose.Schema({
@@ -30,7 +29,4 @@ const alimentacionSchema = new mongoose.Schema({
 // Modelo de la alimentación
 const Alimentacion = mongoose.model("Alimentacion", alimentacionSchema);
 
-export {
-  Alimentacion,
-  alimentacionValidationSchema,
-};
+export default Alimentacion;
