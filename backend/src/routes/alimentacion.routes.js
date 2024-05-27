@@ -1,19 +1,22 @@
 import express from "express";
-import alimentacionController from "../controllers/alimentacionController";
+import alimentacionController from "./alimentacion.controller";
+import { isAdmin } from "./middleware/authorization.middleware";
 
 const router = express.Router();
+
+// Ruta para obtener todas las alimentaciones
 router.get("/alimentaciones", alimentacionController.obtenerAlimentaciones);
 
-// Obtener una alimentación por su ID
+// Ruta para obtener una alimentación por su ID
 router.get("/alimentaciones/:id", alimentacionController.obtenerAlimentacionPorId);
 
-// Crear una nueva alimentación
-router.post("/alimentaciones", alimentacionController.crearAlimentacion);
+// Ruta para crear una nueva alimentación, requiere verificación de rol de administrador
+router.post("/alimentaciones", isAdmin, alimentacionController.crearAlimentacion);
 
-// Actualizar una alimentación existente
-router.put("/alimentaciones/:id", alimentacionController.actualizarAlimentacion);
+// Ruta para actualizar una alimentación existente, requiere verificación de rol de administrador
+router.put("/alimentaciones/:id", isAdmin, alimentacionController.actualizarAlimentacion);
 
-// Eliminar una alimentación existente
-router.delete("/alimentaciones/:id", alimentacionController.eliminarAlimentacion);
+// Ruta para eliminar una alimentación existente, requiere verificación de rol de administrador
+router.delete("/alimentaciones/:id", isAdmin, alimentacionController.eliminarAlimentacion);
 
 export default router;
