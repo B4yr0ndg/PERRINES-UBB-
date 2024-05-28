@@ -1,65 +1,73 @@
 import { handleError } from "./errorHandlers";
 import Alimentacion from "../models/alimentacion.model";
-import alimentacionSchema from "../models/alimentacion.schema";
+import Dog from "../models/dog.model";
 
 const alimentacionService = {
-   /**
-    * @returns {Promise} Returns a promise that resolves with all alimentaciones
-    * This method is used to get all alimentaciones
-    */
+  /**
+   * @returns {Promise} Devuelve una promesa que se resuelve con todas las alimentaciones.
+   * Este método se utiliza para obtener todas las alimentaciones.
+   */
   async obtenerAlimentaciones() {
     try {
-      return await Alimentacion.find();
+      // Poblar detalles del perro asociado
+      return await Alimentacion.find().populate("perroId", "nombre raza edad");
     } catch (error) {
       handleError(error, "obtenerAlimentaciones");
-      throw new Error("Error al obtener las alimentaciones");
+      throw new Error("Error al obtener las alimentaciones: " + error.message);
     }
   },
 
-  /** This method is used to get a alimentacion by id
-   * @returns {Promise} Returns a promise that resolves with the alimentacion
-   * @param {string} id - The id of the alimentacion
+  /**
+   * Este método se utiliza para obtener una alimentación por id.
+   * @param {string} id - El id de la alimentación.
+   * @returns {Promise} Devuelve una promesa que se resuelve con la alimentación.
    */
   async obtenerAlimentacionPorId(id) {
     try {
-      return await Alimentacion.findById(id);
+      if (!id) {
+        throw new Error("ID de alimentación es requerido");
+      }
+      return await Alimentacion.findById(id).populate("perroId", "nombre raza edad");
     } catch (error) {
       handleError(error, "obtenerAlimentacionPorId");
-      throw new Error("Error al obtener la alimentación");
+      throw new Error("Error al obtener la alimentación: " + error.message);
     }
   },
 
-  /** This method is used to create a new alimentacion
-    * @returns {Promise} Returns a promise that resolves with the created alimentacion
-    * @param {Object} datosAlimentacion - The data of the alimentacion to create
-    */
+  /**
+   * Este método se utiliza para crear una nueva alimentación.
+   * @param {Object} datosAlimentacion - Los datos de la alimentación a crear.
+   * @returns {Promise} Devuelve una promesa que se resuelve con la alimentación creada.
+   */
   async crearAlimentacion(datosAlimentacion) {
     try {
-      const { error } = alimentacionSchema.validate(datosAlimentacion);
-      if (error) {
-        throw new Error(error.details[0].message);
+      if (!datosAlimentacion || !datosAlimentacion.perroId) {
+        throw new Error("Datos de alimentación y perroId son requeridos");
+      }
+      //  Verificar si el perro existe antes de crear la alimentación
+      const perroExiste = await Dog.findById(datosAlimentacion.perroId);
+      if (!perroExiste) {
+        throw new Error("Perro no encontrado");
       }
 
       const nuevaAlimentacion = new Alimentacion(datosAlimentacion);
       return await nuevaAlimentacion.save();
     } catch (error) {
       handleError(error, "crearAlimentacion");
-      throw new Error("Error al crear la alimentación");
+      throw new Error("Error al crear la alimentación: " + error.message);
     }
   },
 
-    /**
-    * @param {Object} datosAlimentacion - The new data of the alimentacion
-    * @param {string} id - The id of the alimentacion to update
-    * @returns {Promise} Returns a promise that resolves with the updated alimentacion
- */
+  /**
+   * @param {Object} datosAlimentacion - Los nuevos datos de la alimentación.
+   * @param {string} id - El id de la alimentación a actualizar.
+   * @returns {Promise} Devuelve una promesa que se resuelve con la alimentación actualizada.
+   */
   async actualizarAlimentacion(id, datosAlimentacion) {
     try {
-      const { error } = alimentacionSchema.validate(datosAlimentacion);
-      if (error) {
-        throw new Error(error.details[0].message);
+      if (!id || !datosAlimentacion) {
+        throw new Error("ID de alimentación y datos de alimentación son requeridos");
       }
-
       const alimentacionActualizada = await Alimentacion.findByIdAndUpdate(
         id,
         datosAlimentacion,
@@ -73,16 +81,20 @@ const alimentacionService = {
       return alimentacionActualizada;
     } catch (error) {
       handleError(error, "actualizarAlimentacion");
-      throw new Error("Error al actualizar la alimentación");
+      throw new Error("Error al actualizar la alimentación: " + error.message);
     }
   },
 
-    /**
-    * @returns {Promise} Returns a promise that resolves with the deleted alimentacion
-    * @param {string} id - The id of the alimentacion to delete
-    * This method is used to delete a alimentacion by id */
+  /**
+   * Este método se utiliza para eliminar una alimentación por id.
+   * @param {string} id - El id de la alimentación a eliminar.
+   * @returns {Promise} Devuelve una promesa que se resuelve con la alimentación eliminada.
+   */
   async eliminarAlimentacion(id) {
     try {
+      if (!id) {
+        throw new Error("ID de alimentación es requerido");
+      }
       const alimentacionEliminada = await Alimentacion.findByIdAndDelete(id);
       if (!alimentacionEliminada) {
         throw new Error("Alimentación no encontrada");
@@ -90,7 +102,7 @@ const alimentacionService = {
       return alimentacionEliminada;
     } catch (error) {
       handleError(error, "eliminarAlimentacion");
-      throw new Error("Error al eliminar la alimentación");
+      throw new Error("Error al eliminar la alimentación: " + error.message);
     }
   },
 };
