@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 "use strict";
 // Importa el modelo de datos 'Role'
 import Role from "../models/role.model.js";
@@ -20,8 +21,10 @@ async function createRoles() {
       new Role({ name: "user" }).save(),
       new Role({ name: "admin" }).save(),
     ]);
+    // eslint-disable-next-line no-console
     console.log("* => Roles creados exitosamente");
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
 }
