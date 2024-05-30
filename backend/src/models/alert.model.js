@@ -1,10 +1,10 @@
 // SE IMPORTA LA BIBLIOTECA DE MONGOOSE
-const mongoose = require("mongoose");
+import mongoose from ¨mongoose¨;
 
 // SE DEFINE EL ESQUEMA DE LA COLECCION DE NOTIFICACIONES
 const alertSchema = new mongoose.Schema({
 // NOMBRE DE LA NOTIFICACION 
-        type: {
+        asunto: {
         type: String,
         enum: ["appointment", "task"],
         required: true,
@@ -39,4 +39,4 @@ const alertSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model("Alert", alertSchema);
+export default mongoose.model("Alert", alertSchema);
