@@ -6,11 +6,11 @@
     import alertController from "../controllers/alertas.controller";
 // Se definen las rutas y se asocian a las funciones del controlador
 
-    router.get('/', alertasController.getAllAlertas);
-    router.get('/:id', alertasController.getAlertaById);
-    router.post('/', alertasController.createAlerta);
-    router.put('/:id', alertasController.updateAlerta);
-    router.delete('/:id', alertasController.deleteAlerta);
+    router.get('/', alertasController.getAllAlert);
+    router.get('/:id', alertasController.getAlertById);
+    router.post('/', alertasController.createAlert);
+    router.put('/:id', alertasController.updateAlert);
+    router.delete('/:id', alertasController.deleteAlert);
 
 // se exporta el enrutador 
     export default router;
