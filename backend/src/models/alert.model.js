@@ -4,26 +4,26 @@ import mongoose from ¨mongoose¨;
 // SE DEFINE EL ESQUEMA DE LA COLECCION DE NOTIFICACIONES
 const alertSchema = new mongoose.Schema({
 // NOMBRE DE LA NOTIFICACION 
-        asunto: {
+        titulo: {
         type: String,
         enum: ["appointment", "task"],
         required: true,
     },
-
+        
 // PRIORIDAD DE LA NOTIFICION 
-    priority: {
+    prioridad: {
         type: String,
-        enum: ["high", "medium", "low"],
+        enum: ["alta", "media", "baja"],
         required: true,
     },
 
 // CONTENIDO DEL MENSAJE
-    message: {
+    mensaje: {
         type: String,
         required: true,
     },
 // SE ALMACENA EL EMAIL PARA EL ENVIO DE LA NOTIFICACION 
-    recipientEmail: {
+    Email: {
         type: String,
         required: true,
     },
@@ -36,7 +36,8 @@ const alertSchema = new mongoose.Schema({
     interval: { // Intervalo en horas
         type: Number,
         required: true,
-    },
+    }, 
+    { timestamps: true });
 });
 
 export default mongoose.model("Alert", alertSchema);
