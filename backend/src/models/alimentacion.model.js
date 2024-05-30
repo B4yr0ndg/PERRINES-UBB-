@@ -19,14 +19,18 @@ const alimentacionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  horario: {
+  horarios: [{
     type: String,
-    enum: ["Desayuno", "Almuerzo", "Cena"], // Horarios predefinidos
     required: true,
+  }],
+
+  fechaRegistro: {
+    type: Date,
+    default: Date.now },
   },
-});
+);
 
 // Modelo de la alimentación
-const Alimentacion = mongoose.model("Alimentacion", alimentacionSchema);
+const alimentacion = mongoose.model("alimentacion", alimentacionSchema);
 
-export default Alimentacion;
+export default alimentacion;

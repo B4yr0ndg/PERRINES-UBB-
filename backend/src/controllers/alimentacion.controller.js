@@ -1,122 +1,111 @@
 "use strict";
 
-import { respondSuccess, respondError } from "../utils/resHandler";
-import AlimentacionService from "../services/alimentacion.service";
-import { handleError } from "../utils/errorHandler";
-import { alimentacionBodySchema } from "../schema/alimentacion.schema";
+import alimentacion from "../models/alimentacion.model.js";
+import alimentacionBodySchema from "../schema/alimentacion.schema.js";
+/**
+ * Crear una nueva alimentación.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} The response object.
+ */
+export const crearAlimentacion = async (req, res) => {
+  try {
+    const { error } = alimentacionBodySchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const nuevaAlimentacion = new alimentacion(req.body);
+    const alimentacionGuardada = await nuevaAlimentacion.save();
+    res.status(201).json({ message: "Alimentación creada", data: alimentacionGuardada });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/**
+ * Obtener una alimentación por ID.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} The response object.
+ */
+export const obtenerAlimentacionPorId = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const alimentacion = await alimentacion.findById(id);
+    if (!alimentacion) {
+      return res.status(404).json({ message: "Alimentación no encontrada" });
+    }
+    res.status(200).json({ message: "Alimentación encontrada", data: alimentacion });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 /**
  * Obtener todas las alimentaciones.
- *
- * @param {Object} req - Objeto de solicitud.
- * @param {Object} res - Objeto de respuesta.
- * @returns {Object} - Todas las alimentaciones encontradas.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} The response object.
  */
-async function obtenerAlimentaciones(req, res) {
+export const obtenerAlimentaciones = async (req, res) => {
   try {
-    const [alimentaciones] = await AlimentacionService.obtenerAlimentaciones();
-    respondSuccess(req, res, 200, alimentaciones);
-  } catch (error) {
-    handleError(error, "alimentacion.controller -> obtenerAlimentaciones");
-    respondError(req, res, 500, "Error al obtener las alimentaciones");
-  }
-}
-
-/**
- * Obtener una alimentación por su ID.
- *
- * @param {Object} req - Objeto de solicitud.
- * @param {Object} res - Objeto de respuesta.
- * @returns {Object} - Alimentación encontrada.
- */
-async function obtenerAlimentacionPorId(req, res) {
-  try {
-    const [alimentacion] = await AlimentacionService.obtenerAlimentacionPorId(req.params.id);
-    if (!alimentacion) {
-      return respondError(req, res, 404, "Alimentación no encontrada");
+    const alimentaciones = await alimentacion.find();
+    if (alimentaciones.length === 0) {
+      return res.status(404).json({ message: "No se encontraron alimentaciones" });
     }
-    respondSuccess(req, res, 200, alimentacion);
+    res.status(200).json({ message: "Alimentaciones encontradas", data: alimentaciones });
   } catch (error) {
-    handleError(error, "alimentacion.controller -> obtenerAlimentacionPorId");
-    respondError(req, res, 500, "Error al obtener la alimentación");
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
 /**
- * Crear una nueva alimentación.
- *
- * @param {Object} req - Objeto de solicitud.
- * @param {Object} res - Objeto de respuesta.
- * @returns {Object} - Alimentación creada.
+ * Actualizar una alimentación por ID.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} The response object.
  */
-async function crearAlimentacion(req, res) {
+export const actualizarAlimentacion = async (req, res) => {
   try {
     const { error } = alimentacionBodySchema.validate(req.body);
     if (error) {
-      return respondError(req, res, 400, error.details[0].message);
+      return res.status(400).json({ message: error.details[0].message });
     }
 
-    const { tipoAlimento, cantidad, frecuencia, horario } = req.body;
-    const nuevaAlimentacion = new Alimentacion({ tipoAlimento, cantidad, frecuencia, horario });
-    const alimentacionGuardada = await nuevaAlimentacion.save();
-    respondSuccess(req, res, 201, alimentacionGuardada);
-  } catch (error) {
-    handleError(error, "alimentacion.controller -> crearAlimentacion");
-    respondError(req, res, 500, "Error al crear la alimentación");
-  }
-}
-
-/**
- * Actualizar una alimentación existente.
- *
- * @param {Object} req - Objeto de solicitud.
- * @param {Object} res - Objeto de respuesta.
- * @returns {Object} - Alimentación actualizada.
- */
-async function actualizarAlimentacion(req, res) {
-  try {
-    const { error } = alimentacionBodySchema.validate(req.body);
-    if (error) {
-      return respondError(req, res, 400, error.details[0].message);
-    }
-
-    const { tipoAlimento, cantidad, frecuencia, horario } = req.body;
-    const alimentacionActualizada = await Alimentacion.findByIdAndUpdate(
-      req.params.id,
-      { tipoAlimento, cantidad, frecuencia, horario },
+    const id = req.params.id;
+    const alimentacionActualizada = await alimentacion.findByIdAndUpdate(
+      id,
+      req.body,
       { new: true },
     );
-
     if (!alimentacionActualizada) {
-      return respondError(req, res, 404, "Alimentación no encontrada");
+      return res.status(404).json({ message: "Alimentación no encontrada" });
     }
-
-    respondSuccess(req, res, 200, alimentacionActualizada);
+    res.status(200).json({ message: "Alimentación actualizada", data: alimentacionActualizada });
   } catch (error) {
-    handleError(error, "alimentacion.controller -> actualizarAlimentacion");
-    respondError(req, res, 500, "Error al actualizar la alimentación");
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
 /**
- * Eliminar una alimentación existente.
- *
- * @param {Object} req - Objeto de solicitud.
- * @param {Object} res - Objeto de respuesta.
- * @returns {Object} - Alimentación eliminada.
+ * Eliminar una alimentación por ID.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} The response object.
  */
-async function eliminarAlimentacion(req, res) {
+export const eliminarAlimentacion = async (req, res) => {
   try {
-    const alimentacionEliminada = await Alimentacion.findByIdAndDelete(req.params.id);
+    const id = req.params.id;
+    const alimentacionEliminada = await alimentacion.findByIdAndDelete(id);
     if (!alimentacionEliminada) {
-      return respondError(req, res, 404, "Alimentación no encontrada");
+      return res.status(404).json({ message: "Alimentación no encontrada" });
     }
-    respondSuccess(req, res, 200, alimentacionEliminada);
+    res.status(200).json({ message: "Alimentación eliminada", data: alimentacionEliminada });
   } catch (error) {
-    handleError(error, "alimentacion.controller -> eliminarAlimentacion");
-    respondError(req, res, 500, "Error al eliminar la alimentación");
+    res.status(500).json({ message: error.message });
   }
-}
+};
 
 export default {
   obtenerAlimentaciones,
