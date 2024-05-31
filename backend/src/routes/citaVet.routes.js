@@ -6,21 +6,22 @@ import { getCitaVeterinario,
     updateCitaVeterinario,
     deleteCitaVeterinario } from "../controllers/citasVet.controller.js"; 
 import { isAdmin } from "../middlewares/authorization.middleware.js";
+import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
-
+router.use(authenticationMiddleware);
 // Obtener todas las citas veterinarias
-router.get("/getvet", getCitaVeterinario);
+router.get("/getvet", isAdmin, getCitaVeterinario);
 
 // Obtener una cita veterinaria por su ID
-router.get("/getvet/:id", getCitaVeterinarioById);
+router.get("/getvet/:id", isAdmin, getCitaVeterinarioById);
 
 // Crear una nueva cita veterinaria
-router.post("/create/vet", createCitaVeterinario);
+router.post("/create/vet", isAdmin, createCitaVeterinario);
 
 // Actualizar una cita veterinaria por su ID
-router.put("/update/vet/:id", updateCitaVeterinario);
+router.put("/update/vet/:id", isAdmin, updateCitaVeterinario);
 
 // Eliminar una cita veterinaria por su ID
-router.delete("/deleteVet/:id", deleteCitaVeterinario);
+router.delete("/deleteVet/:id", isAdmin, deleteCitaVeterinario);
 
 export default router;

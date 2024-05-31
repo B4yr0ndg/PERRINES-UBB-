@@ -49,6 +49,7 @@ export async function createCitaVeterinario(req, res) {
       from: "Acme <onboarding@resend.dev>",
       to: email,
       subject: "Solicitud de cita veterinaria",
+      // eslint-disable-next-line max-len
       html: "<strong>Su solicitud para la cita veterinaria fué existosa, pronto rebirira un correo de confirmacion</strong>",
     });
   
