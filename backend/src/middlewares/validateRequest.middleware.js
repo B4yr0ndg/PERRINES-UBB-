@@ -1,5 +1,4 @@
-/*
-import dogSchema from "../schemas/dog.schema.js";
+/* import dogSchema from "../schemas/dog.schema.js";
 
 // eslint-disable-next-line require-jsdoc
 const validateDog = (req, res, next) => {
@@ -11,5 +10,5 @@ const validateDog = (req, res, next) => {
 };
 
 export default validateDog;
-*/
+*/ 
 
