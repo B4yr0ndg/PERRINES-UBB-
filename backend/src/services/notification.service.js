@@ -1,5 +1,6 @@
-    const nodemailer = require("nodemailer");
-    const Alert = require("../models/alert.model");
+   import nodemailer from 'nodemailer';
+   import Alert from '../models/alert.model.js';
+
 
 // eslint-disable-next-line require-jsdoc
     const sendEmail = async (email, subject, text) => {
@@ -36,7 +37,7 @@ const updateAlertNextSendDate = async (alert) => {
     await alert.save();
 };
 
-module.exports = {
+export = {
     sendEmail,
     checkAndSendAlerts,
 };
