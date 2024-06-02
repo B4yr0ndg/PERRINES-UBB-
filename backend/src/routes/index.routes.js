@@ -9,7 +9,7 @@ import userRoutes from "./user.routes.js";
 import authRoutes from "./auth.routes.js";
 
 /** Enrutador de alimentación */
-import alimentacionRoutes from "./alimentacion.routes.js"; // Asegúrate de que la ruta sea correcta
+import feedingRoutes from "./feeding.routes.js";
 
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
@@ -21,7 +21,7 @@ router.use("/users", authenticationMiddleware, userRoutes);
 // Define las rutas para la autenticación /api/auth
 router.use("/auth", authRoutes);
 // Define las rutas para la alimentación /alimentacion
-router.use("/alimentacion", alimentacionRoutes);
+router.use("/feeding", feedingRoutes);
 
 // Exporta el enrutador
 export default router;
