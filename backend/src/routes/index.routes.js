@@ -17,6 +17,8 @@ import perrosRoutes from "./dog.routes.js";
 import citaVeterinarioRoutes from "./citaVet.routes.js";
 /** Enrutador de alertas */
 import alertRoutes from "./alert.routes.js";
+/** Enrutador de alimentación */
+import feedingRoutes from "./feeding.routes.js";
 
 /** Instancia del enrutador */
 const router = Router();
@@ -32,6 +34,8 @@ router.use("/perros", perrosRoutes);
 router.use("/citas", citaVeterinarioRoutes);
 // Define las rutas para las alertas /api/alerts
 router.use("/alerts", authenticationMiddleware, alertRoutes);
+// Define las rutas para la alimentación /alimentacion
+router.use("/feeding", feedingRoutes);
 
 
 // Exporta el enrutador
