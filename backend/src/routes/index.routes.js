@@ -11,6 +11,8 @@ import authRoutes from "./auth.routes.js";
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
+import alertRoutes from "./alert.routes.js";
+
 /** Instancia del enrutador */
 const router = Router();
 
@@ -19,5 +21,6 @@ router.use("/users", authenticationMiddleware, userRoutes);
 // Define las rutas para la autenticación /api/auth
 router.use("/auth", authRoutes);
 
+router.use("/alerts", authenticationMiddleware, alertRoutes);
 // Exporta el enrutador
 export default router;
