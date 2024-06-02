@@ -13,6 +13,8 @@ import perrosRoutes from "./dog.routes.js";
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
+/** Enrutador de citas veterinarias */
+import citaVeterinarioRoutes from "./citaVet.routes.js";
 
 /** Instancia del enrutador */
 const router = Router();
@@ -21,7 +23,12 @@ const router = Router();
 router.use("/users", authenticationMiddleware, userRoutes);
 // Define las rutas para la autenticación /api/auth
 router.use("/auth", authRoutes);
+
 router.use("/perros", perrosRoutes);
+
+// Define las rutas para las citas veterinarias /api/citas
+router.use("/citas", citaVeterinarioRoutes);
+
 
 // Exporta el enrutador
 export default router;

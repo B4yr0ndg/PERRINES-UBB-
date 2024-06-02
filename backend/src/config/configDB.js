@@ -14,7 +14,6 @@ import { handleError } from "../utils/errorHandler.js";
  * @returns {Promise<void>} Una promesa que se resuelve cuando se establece la conexión con la base de datos.
  */
 
-// eslint-disable-next-line require-jsdoc
 async function setupDB() {
   try {
     // eslint-disable-next-line no-console
