@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const citaVeterinarioSchema = new mongoose.Schema({
     mascota: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "perrines test",
+        ref: "dogs",
         required: true,
     },
     fecha: {
@@ -21,12 +21,5 @@ const citaVeterinarioSchema = new mongoose.Schema({
     },
 });
 
-citaVeterinarioSchema.pre("save", function(next) {
-    const currentDate = new Date();
-    if (this.get("fecha") < currentDate) {
-        return next(new Error("La fecha de la cita no puede ser anterior a hoy."));
-    }
-    next();
-});
 
-export default mongoose.model("CitaVeterinario", citaVeterinarioSchema);
+export default mongoose.model("citaVeterinarios", citaVeterinarioSchema);

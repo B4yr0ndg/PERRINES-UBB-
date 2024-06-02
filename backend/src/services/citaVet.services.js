@@ -33,14 +33,26 @@ async function getCitaVeterinario() {
  */
 async function createCitaVeterinario(citaVeterinario) {
   try {
+    // Validar los datos de la cita veterinaria
     const { error } = citaVeterinariaBodySchema.validate(citaVeterinario);
     if (error) {
-      return null;
+      // Si hay errores de validación, lanzar una excepción con un mensaje de error específico
+      throw new Error(`Error de validación: ${error.message}`);
     }
+
+    // Crear una nueva instancia de CitaVeterinario con los datos proporcionados
     const nuevaCitaVeterinario = new CitaVeterinario(citaVeterinario);
-    return await nuevaCitaVeterinario.save();
+    
+    // Guardar la nueva cita veterinaria en la base de datos
+    const citaGuardada = await nuevaCitaVeterinario.save();
+    
+    // Devolver la cita veterinaria guardada
+    return citaGuardada;
   } catch (error) {
+    // Manejar errores y registrarlos adecuadamente
     handleError(error, "citaVeterinario.service -> createCitaVeterinario");
+    // Devolver null en caso de error
+    return null;
   }
 }
 

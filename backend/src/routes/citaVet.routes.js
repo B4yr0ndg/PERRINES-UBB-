@@ -6,9 +6,9 @@ import { getCitaVeterinario,
     updateCitaVeterinario,
     deleteCitaVeterinario } from "../controllers/citasVet.controller.js"; 
 import { isAdmin } from "../middlewares/authorization.middleware.js";
-import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+ import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
-router.use(authenticationMiddleware);
+ router.use(authenticationMiddleware);
 // Obtener todas las citas veterinarias
 router.get("/getvet", isAdmin, getCitaVeterinario);
 
