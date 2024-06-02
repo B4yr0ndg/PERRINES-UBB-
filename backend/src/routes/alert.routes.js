@@ -1,16 +1,17 @@
 // Se importa el modulo
-    import express from "express";
+import express from "express";
 // Se crea un enrutador 
-    const router = express.Router();
-// Se importa el controlador
-    import alertController from "../controllers/alert.controller";
+const router = express.Router();
 // Se definen las rutas y se asocian a las funciones del controlador
+import { createAlert, updateAlert, getAllAlerts } from "../controllers/Alert.controllers.js";
+import { isAdmin } from "../middlewares/authorization.middleware.js";
+import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
-    router.get('/', alertController.getAllAlert);
-    router.get('/:id', alertController.getAlertById);
-    router.post('/', alertController.createAlert);
-    router.put('/:id', alertController.updateAlert);
-    router.delete('/:id', alertController.deleteAlert);
+router.use(authenticationMiddleware);
+// Definición de rutas
+router.get("/", isAdmin, getAllAlerts);
+router.post("/create", isAdmin, createAlert);
+router.put("/:id", isAdmin, updateAlert);
 
-// se exporta el enrutador 
-    export default router;
+// Se exporta el enrutador 
+export default router;
