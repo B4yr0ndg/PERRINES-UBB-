@@ -4,6 +4,7 @@ import CitaVeterinario from "../models/citaVet.model.js";
 import { handleError } from "../utils/errorHandler.js";
 import citaVeterinariaBodySchema from "../schema/citaVet.schema.js";
 
+
 /**
  * @typedef CitaVeterinario
  * @property {string} _id
@@ -19,7 +20,7 @@ import citaVeterinariaBodySchema from "../schema/citaVet.schema.js";
  */
 async function getCitaVeterinario() {
   try {
-    return await CitaVeterinario.find();
+    return await CitaVeterinario.find().populate("mascota");
   } catch (error) {
     handleError(error, "citaVeterinario.service -> getCitaVeterinario");
   }
@@ -64,7 +65,7 @@ async function createCitaVeterinario(citaVeterinario) {
  */
 async function getCitaVeterinarioById(id) {
   try {
-    return await CitaVeterinario.findById(id);
+    return await CitaVeterinario.findById(id).populate("mascota");
   } catch (error) {
     handleError(error, "citaVeterinario.service -> getCitaVeterinarioById");
   }

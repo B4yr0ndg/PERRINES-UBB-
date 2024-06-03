@@ -21,12 +21,16 @@ const resend = new Resend("re_cBCiaHJD_PdYEvkh7eu8GmbxbM8mUr1XD");
  */
 export async function getCitaVeterinario(req, res) {
   try {
-    const cita = await CitaVeterinarioService.getCitaVeterinario();
-    cita.length === 0
-      ? respondSuccess(req, res, 204)
-      : respondSuccess(req, res, 200, cita);
+    // Suponiendo que CitaVeterinarioService.getCitaVeterinario devuelve una consulta de Mongoose
+    const citas = await CitaVeterinarioService.getCitaVeterinario();
+
+    if (citas.length === 0) {
+      respondSuccess(req, res, 204); 
+    } else {
+      respondSuccess(req, res, 200, citas); 
+    }
   } catch (error) {
-    respondError(req, res, 400, error.message);
+    respondError(req, res, 400, error.message); 
   }
 }
 
@@ -61,13 +65,21 @@ export async function createCitaVeterinario(req, res) {
     // Obtener el nombre de la mascota
     const mascotaDetalle = await Mascota.findById(mascota);
     const nombreMascota = mascotaDetalle.nombre;
+    const edadMascota = mascotaDetalle.edad;
+    const razaMascota = mascotaDetalle.raza;
+    const identificacionMascota = mascotaDetalle.identificacion;
+    const estadoSaludMascota = mascotaDetalle.estadoSalud;
     
 
     // Construir el contenido del correo electrónico
     const htmlContent = `
       <strong>Su solicitud para la cita veterinaria fue exitosa.</strong><br>
-      La cita se agendó para el <strong>${fecha}</strong>.<br>
+      La cita se agendó para el <strong>${fecha}</strong>.
+      <br>Rut: ${identificacionMascota}<br>
       Nombre de la mascota: ${nombreMascota}<br>
+      Edad: ${edadMascota}<br>
+      raza: ${razaMascota}<br>
+      Estado de salud: ${estadoSaludMascota}<br>
       Motivo: ${motivo}
     `;
 
@@ -83,7 +95,7 @@ export async function createCitaVeterinario(req, res) {
       return res.status(400).json({ error });
     }
   
-    res.status(200).json({ data });
+    res.status(200).json({ data: nuevaCita });
   } catch (error) {
     handleError(error, "citaVeterinario.controller -> createCitaVeterinario");
     respondError(req, res, 500, "No se pudo crear la cita");
