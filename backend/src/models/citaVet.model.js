@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 const citaVeterinarioSchema = new mongoose.Schema({
     mascota: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "dogs",
+        ref: "Dog",
         required: true,
     },
     fecha: {
