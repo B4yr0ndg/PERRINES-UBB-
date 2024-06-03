@@ -37,7 +37,6 @@ const feedingSchema = Joi.object({
     "array.max": "No debe haber más de 10 horarios permitidos.",
     "any.required": "Los horarios permitidos son requeridos.",
   }),
-  generarPDF: Joi.boolean().optional(),
 });
 
 export default feedingSchema;
