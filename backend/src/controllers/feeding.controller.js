@@ -11,11 +11,28 @@ import { generateFeedingPDF } from "../utils/pdf.js";
 export const createFeeding = async (req, res) => {
   try {
     const { perroId, tipoAlimento, cantidad, frecuencia,
-      horariosAlimentacion, limiteDiario, horariosPermitidos } = req.body;
+      horariosAlimentacion, limiteDiario, horariosPermitidos, generarPDF } = req.body;
 
     const perro = await Dog.findById(perroId);
     if (!perro) {
       return res.status(404).json({ message: "Perro no encontrado" });
+    }
+
+    // Validar que no exista una alimentación previa para el perro
+    const alimentacionPrevia = await Feeding.findOne({ perro: perroId });
+    if (alimentacionPrevia) {
+      return res.status(400).json({ message: "Ya existe una alimentación para este perro" });
+    }
+
+    // Validar que los horarios de alimentación están dentro de los horarios permitidos
+    const horariosInvalidos = horariosAlimentacion.filter((horario) => {
+      return !horariosPermitidos.includes(horario);
+    });
+
+    if (horariosInvalidos.length > 0) {
+      return res.status(400).json({
+        message: `Los siguientes horarios no están permitidos: ${horariosInvalidos.join(", ")}`,
+      });
     }
 
     const nuevaAlimentacion = new Feeding({
@@ -27,8 +44,21 @@ export const createFeeding = async (req, res) => {
       limiteDiario,
       horariosPermitidos,
     });
+
     // Generar PDF
-    generateFeedingPDF();
+    if (generarPDF) {
+      const feedingData = {
+        perro: { nombre: perro.nombre },
+        tipoAlimento,
+        cantidad,
+        frecuencia,
+        horariosAlimentacion,
+        limiteDiario,
+        horariosPermitidos,
+      };
+      generateFeedingPDF(feedingData);
+    }
+
     await nuevaAlimentacion.save();
     res.status(201).json({ message: "Alimentación creada exitosamente" });
   } catch (error) {
@@ -77,14 +107,33 @@ export const getAllFeedings = async (_, res) => {
  */
 export const updateFeeding = async (req, res) => {
   try {
+    // Validar que hay datos para actualizar
+    if (Object.keys(req.body).length === 0) {
+      return res.status(400).json({ message: "No hay datos para actualizar" });
+    }
+
+    // Validar que los horarios de alimentación sean válidos
+    if (datosActualizados.horariosAlimentacion && datosActualizados.horariosPermitidos) {
+      const horariosInvalidos = datosActualizados.horariosAlimentacion.filter((horario) => {
+        return !datosActualizados.horariosPermitidos.includes(horario);
+      });
+      if (horariosInvalidos.length > 0) {
+        return res.status(400).json({
+          message: `Los siguientes horarios no están permitidos: ${horariosInvalidos.join(", ")}`,
+        });
+      }
+    }
+
     const alimentacionActualizada = await Feeding.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      datosActualizados,
       { new: true },
     );
+
     if (!alimentacionActualizada) {
       return res.status(404).json({ message: "Alimentación no encontrada" });
     }
+
     res.status(200).json(alimentacionActualizada);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -108,6 +157,5 @@ export const deleteFeeding = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 
 export default { createFeeding, getFeedingById, getAllFeedings, updateFeeding, deleteFeeding };

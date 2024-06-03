@@ -1,49 +1,60 @@
 import PDFDocument from "pdfkit-table";
-import Feeding from "../models/feeding.model.js";
-import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 
 /**
- * Genera un PDF con la información de las alimentaciones.
+ * Genera un PDF con la información de una alimentación específica.
+ * @param {Object} feedingData - Los datos de alimentación específicos.
  */
-export async function generateFeedingPDF() {
+export async function generateFeedingPDF(feedingData) {
     // Crea instancia de PDFDocument
     const doc = new PDFDocument({ margin: 30, size: "A4" });
-    const feedings = await Feeding.find().populate("perro");
     const randomFileName = uuidv4();
     const filePath = `./src/Pdf/${randomFileName}.pdf`;
 
     doc.pipe(fs.createWriteStream(filePath));
 
+    // Título del documento
+    doc.fontSize(20).fillColor("blue").text("Alimentación de perritos UBB", { align: "center" });
+    doc.moveDown();
+
+    // Información del perro
+    // eslint-disable-next-line max-len
+    doc.fontSize(14).fillColor("black").text(`Nombre del perro: ${feedingData.perro.nombre}`, { align: "left" });
+    doc.moveDown();
+    
+    // Línea separadora
+    doc.strokeColor("#aaaaaa").lineWidth(1).moveTo(30, 90).lineTo(570, 90).stroke();
+    doc.moveDown();
+
     // Se define el contenido de la tabla
     const table = {
-        title: { label: "Alimentacion de perritos UBB", color: "blue" },
         headers: [
-            "Nombre del perro",
-            "Tipo de alimento",
-            "Cantidad",
-            "Frecuencia",
-            "Horarios de alimentacion",
-            "Limite diario",
-            "Horarios permitidos",
+            { label: "Tipo de alimento", width: 100, headerColor: "blue" },
+            { label: "Cantidad", width: 100, headerColor: "blue" },
+            { label: "Frecuencia", width: 100, headerColor: "blue" },
+            { label: "Horarios de alimentación", width: 200, headerColor: "blue" },
+            { label: "Límite diario", width: 100, headerColor: "blue" },
+            { label: "Horarios permitidos", width: 200, headerColor: "blue" },
         ],
-        rows: [],
+        rows: [
+            [
+                feedingData.tipoAlimento,
+                feedingData.cantidad,
+                feedingData.frecuencia,
+                feedingData.horariosAlimentacion.join(", "), // join the array into a string
+                feedingData.limiteDiario,
+                feedingData.horariosPermitidos.join(", "), // join the array into a string
+            ],
+        ],
     };
 
-    // iterate over all feedings
-    feedings.forEach((feeding) => {
-        const rowData = [
-            feeding.perro.nombre,
-            feeding.tipoAlimento,
-            feeding.cantidad,
-            feeding.frecuencia,
-            feeding.horariosAlimentacion.join(", "), // join the array into a string
-            feeding.limiteDiario,
-            feeding.horariosPermitidos.join(", "), // join the array into a string
-        ];
-        table.rows.push(rowData);
-    });
+    await doc.table(table, { startY: 120, columnSpacing: 5, padding: 5 });
+    
+    // Pie de página
+    doc.moveDown(2);
+    // eslint-disable-next-line max-len
+    doc.fontSize(10).fillColor("grey").text("Generado por Sistema de Alimentación de Perritos UBB", { align: "center" });
 
-    await doc.table(table, { startY: 50 });
     doc.end();
 }
