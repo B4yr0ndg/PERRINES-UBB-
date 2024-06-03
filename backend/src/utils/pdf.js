@@ -1,16 +1,24 @@
 import PDFDocument from "pdfkit-table";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
+import Feeding from "../models/feeding.model.js";
 
 /**
  * Genera un PDF con la información de una alimentación específica.
- * @param {Object} feedingData - Los datos de alimentación específicos.
+ * @param {String} feedingId - El ID de la alimentación específica.
+ * @returns {Object} - Un objeto con el path del archivo PDF generado y el nombre del archivo.
  */
-export async function generateFeedingPDF(feedingData) {
+export async function generateFeedingPDF(feedingId) {
+    const feeding = await Feeding.findById(feedingId).populate("perro");
+
+    if (!feeding) {
+        throw new Error("Alimentación no encontrada");
+    }
+
     // Crea instancia de PDFDocument
     const doc = new PDFDocument({ margin: 30, size: "A4" });
-    const randomFileName = uuidv4();
-    const filePath = `./src/Pdf/${randomFileName}.pdf`;
+    const randomFileName = `${uuidv4()}.pdf`;
+    const filePath = `./src/Pdf/${randomFileName}`;
 
     doc.pipe(fs.createWriteStream(filePath));
 
@@ -20,7 +28,7 @@ export async function generateFeedingPDF(feedingData) {
 
     // Información del perro
     // eslint-disable-next-line max-len
-    doc.fontSize(14).fillColor("black").text(`Nombre del perro: ${feedingData.perro.nombre}`, { align: "left" });
+    doc.fontSize(14).fillColor("black").text(`Nombre del perro: ${feeding.perro.nombre}`, { align: "left" });
     doc.moveDown();
     
     // Línea separadora
@@ -39,12 +47,12 @@ export async function generateFeedingPDF(feedingData) {
         ],
         rows: [
             [
-                feedingData.tipoAlimento,
-                feedingData.cantidad,
-                feedingData.frecuencia,
-                feedingData.horariosAlimentacion.join(", "), // join the array into a string
-                feedingData.limiteDiario,
-                feedingData.horariosPermitidos.join(", "), // join the array into a string
+                feeding.tipoAlimento,
+                feeding.cantidad,
+                feeding.frecuencia,
+                feeding.horariosAlimentacion.join(", "), // join the array into a string
+                feeding.limiteDiario,
+                feeding.horariosPermitidos.join(", "), // join the array into a string
             ],
         ],
     };
@@ -57,4 +65,6 @@ export async function generateFeedingPDF(feedingData) {
     doc.fontSize(10).fillColor("grey").text("Generado por Sistema de Alimentación de Perritos UBB", { align: "center" });
 
     doc.end();
+
+    return { filePath, fileName: randomFileName };
 }

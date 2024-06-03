@@ -20,5 +20,7 @@ router.get("/obtener/:id", feedingController.getFeedingById);
 // Obtener todas las alimentaciones
 router.get("/todas", feedingController.getAllFeedings);
 
+// Generar PDF de alimentación
+router.get("/descargar/:id", feedingController.downloadFeedingPDF);
 
 export default router;

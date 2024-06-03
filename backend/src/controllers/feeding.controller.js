@@ -11,7 +11,7 @@ import { generateFeedingPDF } from "../utils/pdf.js";
 export const createFeeding = async (req, res) => {
   try {
     const { perroId, tipoAlimento, cantidad, frecuencia,
-      horariosAlimentacion, limiteDiario, horariosPermitidos, generarPDF } = req.body;
+      horariosAlimentacion, limiteDiario, horariosPermitidos } = req.body;
 
     const perro = await Dog.findById(perroId);
     if (!perro) {
@@ -44,20 +44,6 @@ export const createFeeding = async (req, res) => {
       limiteDiario,
       horariosPermitidos,
     });
-
-    // Generar PDF
-    if (generarPDF) {
-      const feedingData = {
-        perro: { nombre: perro.nombre },
-        tipoAlimento,
-        cantidad,
-        frecuencia,
-        horariosAlimentacion,
-        limiteDiario,
-        horariosPermitidos,
-      };
-      generateFeedingPDF(feedingData);
-    }
 
     await nuevaAlimentacion.save();
     res.status(201).json({ message: "Alimentación creada exitosamente" });
@@ -158,4 +144,24 @@ export const deleteFeeding = async (req, res) => {
   }
 };
 
-export default { createFeeding, getFeedingById, getAllFeedings, updateFeeding, deleteFeeding };
+// Descargar PDF de la alimentación
+/**
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} The generated PDF.
+ */
+export const downloadFeedingPDF = async (req, res) => {
+  try {
+    const { filePath, fileName } = await generateFeedingPDF(req.params.id);
+
+    // Agregar un retraso de 2 segundos (2000 milisegundos) antes de la descarga
+    setTimeout(() => {
+      res.download(filePath, fileName);
+    }, 2000);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// eslint-disable-next-line max-len
+export default { createFeeding, getFeedingById, getAllFeedings, updateFeeding, deleteFeeding, downloadFeedingPDF };
