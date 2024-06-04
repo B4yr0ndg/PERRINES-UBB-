@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable require-jsdoc */
 // Importar modelo de alerta
-import AlertModel from "../models/Alert.model.js";
+import AlertModel from "../models/alert.model.js";
 import { checkAndSendAlerts } from "../services/notification.service.js";
 
 
