@@ -97,7 +97,8 @@ export const updateFeeding = async (req, res) => {
     if (Object.keys(req.body).length === 0) {
       return res.status(400).json({ message: "No hay datos para actualizar" });
     }
-
+      const datosActualizados = req.body;
+    
     // Validar que los horarios de alimentación sean válidos
     if (datosActualizados.horariosAlimentacion && datosActualizados.horariosPermitidos) {
       const horariosInvalidos = datosActualizados.horariosAlimentacion.filter((horario) => {
