@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable require-jsdoc */
 import { Resend } from "resend";
-import Alert from "../models/Alert.model.js";
+import Alert from "../models/alert.model.js";
 
 // Se inicializa Resend con la clave de la API
 const resend = new Resend("re_hHvM3Zi6_B55PkK2cE3pKpiTHE57Srk7c");

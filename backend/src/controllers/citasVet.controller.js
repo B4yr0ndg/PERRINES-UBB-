@@ -10,6 +10,7 @@ import moment from "moment";
 import { Resend } from "resend";
 import Mascota from "../models/dog.model.js";
 import citaVetModel from "../models/citaVet.model.js";
+import mongoose from "mongoose";
 
 
 const resend = new Resend("re_cBCiaHJD_PdYEvkh7eu8GmbxbM8mUr1XD");
@@ -49,13 +50,19 @@ export async function createCitaVeterinario(req, res) {
       return respondError(req, res, 400, "Ya existe una cita para esta mascota en la misma fecha y hora.");
     }
 
-    const fechaActual = moment().startOf("day");
-    const fechaCita = moment(fecha, "YYYY-MM-DD");
+    const fechaActual = moment().startOf("day"); // Fecha actual al inicio del día
+    const fechaCita = moment(fecha, "YYYY-MM-DD"); // Fecha de la cita
 
+    // Verificar si la fecha de la cita es anterior a la fecha actual
+    if (fechaCita.isBefore(fechaActual)) {
+      return respondError(req, res, 400, "La fecha de la cita no puede ser anterior a la fecha actual.");
+    }
+
+    // Si la fecha de la cita es hoy, verificar la hora
     if (fechaCita.isSame(fechaActual, "day")) {
-      const horaActual = moment().format("HH:mm");
-      if (hora < horaActual) {
-        return respondError(req, res, 400, "La hora ingresada no puede ser antes a la actual.");
+      const horaActual = moment().format("HH:mm"); // Hora actual en formato HH:mm
+      if (moment(hora, "HH:mm").isBefore(moment(horaActual, "HH:mm"))) { // Comparar las horas
+        return respondError(req, res, 400, "La hora ingresada no puede ser antes de la actual.");
       }
     }
 
@@ -70,7 +77,6 @@ export async function createCitaVeterinario(req, res) {
     const identificacionMascota = mascotaDetalle.identificacion;
     const estadoSaludMascota = mascotaDetalle.estadoSalud;
     
-
     // Construir el contenido del correo electrónico
     const htmlContent = `
       <strong>Su solicitud para la cita veterinaria fue exitosa.</strong><br>
@@ -78,7 +84,7 @@ export async function createCitaVeterinario(req, res) {
       <br>Rut: ${identificacionMascota}<br>
       Nombre de la mascota: ${nombreMascota}<br>
       Edad: ${edadMascota}<br>
-      raza: ${razaMascota}<br>
+      Raza: ${razaMascota}<br>
       Estado de salud: ${estadoSaludMascota}<br>
       Motivo: ${motivo}
     `;
