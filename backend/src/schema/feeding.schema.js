@@ -25,6 +25,11 @@ const feedingSchema = Joi.object({
     "string.max": "La frecuencia no debe tener más de 50 caracteres.",
     "any.required": "La frecuencia es requerida.",
   }),
+  horariosPermitidos: Joi.array().items(Joi.string()).min(1).max(10).required().messages({
+    "array.min": "Debe haber al menos 1 horario permitido.",
+    "array.max": "No debe haber más de 10 horarios permitidos.",
+    "any.required": "Los horarios permitidos son requeridos.",
+  }),
   horariosAlimentacion: Joi.array().items(Joi.string()).min(1).max(10).required().messages({
     "array.min": "Debe haber al menos 1 horario de alimentación.",
     "array.max": "No debe haber más de 10 horarios de alimentación.",
