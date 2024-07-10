@@ -1,6 +1,8 @@
 import Feeding from "../models/feeding.model.js";
 import Dog from "../models/dog.model.js";
 import { generateFeedingPDF } from "../utils/pdf.js";
+import fs from "fs";
+import feedingSchema from "../schemas/feedingSchema.js";
 
 // Crear nueva alimentación
 /**
@@ -10,8 +12,20 @@ import { generateFeedingPDF } from "../utils/pdf.js";
  */
 export const createFeeding = async (req, res) => {
   try {
+    // Validar los datos usando Joi
+    const { error, value } = feedingSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      return res.status(400).json({ message: errorMessages.join(", ") });
+    }
+
     const { perroId, tipoAlimento, cantidad, frecuencia,
-      horariosAlimentacion, limiteDiario, horariosPermitidos } = req.body;
+      horariosAlimentacion, limiteDiario, horariosPermitidos } = value;
+
+    if (cantidad > limiteDiario) {
+      // eslint-disable-next-line max-len
+      return res.status(400).json({ message: "La cantidad no puede ser mayor que el límite diario." });
+    }
 
     const perro = await Dog.findById(perroId);
     if (!perro) {
@@ -60,9 +74,10 @@ export const createFeeding = async (req, res) => {
  */
 export const getFeedingById = async (req, res) => {
   try {
-    const alimentacion = await Feeding.findById(req.params.id).populate("perro");
+    const alimentacion = await Feeding.find({ perro: req.params.id }).populate("perro");
     if (!alimentacion) {
-      return res.status(404).json({ message: "Alimentación no encontrada" });
+      // eslint-disable-next-line max-len
+      return res.status(404).json({ message: "No existe alimentacion para este perro, porfavor cree una" });
     }
     res.status(200).json(alimentacion);
   } catch (error) {
@@ -98,6 +113,21 @@ export const updateFeeding = async (req, res) => {
       return res.status(400).json({ message: "No hay datos para actualizar" });
     }
 
+    const { error, value } = feedingSchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      const errorMessages = error.details.map((detail) => detail.message);
+      return res.status(400).json({ message: errorMessages.join(", ") });
+    }
+
+    const { cantidad, limiteDiario } = value;
+
+    if (cantidad > limiteDiario) {
+      // eslint-disable-next-line max-len
+      return res.status(400).json({ message: "La cantidad no puede ser mayor que el límite diario." });
+    }
+
+    const datosActualizados = value;
+
     // Validar que los horarios de alimentación sean válidos
     if (datosActualizados.horariosAlimentacion && datosActualizados.horariosPermitidos) {
       const horariosInvalidos = datosActualizados.horariosAlimentacion.filter((horario) => {
@@ -110,8 +140,8 @@ export const updateFeeding = async (req, res) => {
       }
     }
 
-    const alimentacionActualizada = await Feeding.findByIdAndUpdate(
-      req.params.id,
+    const alimentacionActualizada = await Feeding.findOneAndUpdate(
+      { perro: req.params.id },
       datosActualizados,
       { new: true },
     );
@@ -134,7 +164,7 @@ export const updateFeeding = async (req, res) => {
  */
 export const deleteFeeding = async (req, res) => {
   try {
-    const alimentacionEliminada = await Feeding.findByIdAndDelete(req.params.id);
+    const alimentacionEliminada = await Feeding.findOneAndDelete({ perro: req.params.id });
     if (!alimentacionEliminada) {
       return res.status(404).json({ message: "Alimentación no encontrada" });
     }
@@ -156,7 +186,17 @@ export const downloadFeedingPDF = async (req, res) => {
 
     // Agregar un retraso de 2 segundos (2000 milisegundos) antes de la descarga
     setTimeout(() => {
-      res.download(filePath, fileName);
+      res.download(filePath, fileName, (err) => {
+        if (err) {
+          res.status(500).json({ message: err.message });
+        } else {
+          // Después de que el archivo se ha descargado, eliminarlo
+          fs.unlink(filePath, (err) => {
+            // eslint-disable-next-line no-console
+            if (err) console.error("Error al eliminar el archivo:", err);
+          });
+        }
+      });
     }, 2000);
   } catch (error) {
     res.status(500).json({ message: error.message });
