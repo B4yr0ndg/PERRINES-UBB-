@@ -2,7 +2,7 @@ import Feeding from "../models/feeding.model.js";
 import Dog from "../models/dog.model.js";
 import { generateFeedingPDF } from "../utils/pdf.js";
 import fs from "fs";
-import feedingSchema from "../schemas/feedingSchema.js";
+import feedingSchema from "../schema/feeding.schema.js";
 
 // Crear nueva alimentación
 /**
@@ -112,7 +112,6 @@ export const updateFeeding = async (req, res) => {
     if (Object.keys(req.body).length === 0) {
       return res.status(400).json({ message: "No hay datos para actualizar" });
     }
-<<<<<<< HEAD
 
     const { error, value } = feedingSchema.validate(req.body, { abortEarly: false });
     if (error) {
@@ -129,10 +128,6 @@ export const updateFeeding = async (req, res) => {
 
     const datosActualizados = value;
 
-=======
-      const datosActualizados = req.body;
-    
->>>>>>> origin
     // Validar que los horarios de alimentación sean válidos
     if (datosActualizados.horariosAlimentacion && datosActualizados.horariosPermitidos) {
       const horariosInvalidos = datosActualizados.horariosAlimentacion.filter((horario) => {
