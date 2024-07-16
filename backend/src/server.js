@@ -39,6 +39,7 @@ async function setupServer() {
 
     // Inicia el servidor en el puerto especificado
     server.listen(PORT, () => {
+      // eslint-disable-next-line no-console
       console.log(`=> Servidor corriendo en ${HOST}:${PORT}/api`);
     });
   } catch (err) {
@@ -66,5 +67,6 @@ async function setupAPI() {
 
 // Inicia la API
 setupAPI()
+  // eslint-disable-next-line no-console
   .then(() => console.log("=> API Iniciada exitosamente"))
   .catch((err) => handleFatalError(err, "/server.js -> setupAPI"));

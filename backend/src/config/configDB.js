@@ -1,6 +1,6 @@
 "use strict";
 // Importa el modulo 'mongoose' para crear la conexion a la base de datos
-import { connect } from "mongoose";
+import mongoose from "mongoose";
 
 // Agregamos la configuracion de las variables de entorno
 import { DB_URL } from "./configEnv.js";
@@ -16,7 +16,10 @@ import { handleError } from "../utils/errorHandler.js";
 
 async function setupDB() {
   try {
-    await connect(DB_URL);
+    // eslint-disable-next-line no-console
+    console.log(DB_URL);
+    await mongoose.connect(DB_URL);
+    // eslint-disable-next-line no-console
     console.log("=> Conectado a la base de datos");
   } catch (err) {
     handleError(err, "/configDB.js -> setupDB");
