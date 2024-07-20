@@ -1,11 +1,26 @@
+/* src/index.css */
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --color-primary: #2C6C73;
+  --color-secondary: #0B2626;
+  --color-accent: #407364;
+  --color-light: #768C54;
+  --color-background: #F2EDD5;
+
+  --login-bg: #2C6C73;
+  --login-circle: #F2EDD5;
+  --login-input-bg: #0B2626;
+  --login-btn-bg: #407364;
+  --login-btn-text: #F2EDD5;
+  --login-btn-bg-hover: #2C6C73;
+  --login-btn-text-hover: #0B2626;
+
+  font-family: 'Comic Sans MS', cursive, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--color-secondary);
+  background-color: var(--login-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -14,6 +29,214 @@
   -webkit-text-size-adjust: 100%;
 }
 
+body, html {
+  background-color: var(--login-bg);
+  color: var(--color-secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
 a {
-  text-decoration: inherit;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-background);
+}
+
+button {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: var(--color-accent);
+}
+
+input, select {
+  border: 1px solid var(--color-secondary);
+  padding: 0.5em;
+  margin: 0.5em 0;
+  width: 100%;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid var(--color-secondary);
+  padding: 0.5em;
+  text-align: left;
+}
+
+th {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+}
+
+td {
+  background-color: var(--color-light);
+}
+
+.form-container {
+  background-color: var(--color-background);
+  border: 1px solid var(--color-secondary);
+  padding: 1em;
+  border-radius: 0.5em;
+}
+
+.form-container h2 {
+  color: var(--color-primary);
+}
+
+/* Estilos específicos para el formulario de inicio de sesión */
+.login-container {
+  background-color: var(--login-btn-bg);
+  border-radius: 15px;
+  padding: 2rem;
+  text-align: center;
+  width: 300px;
+  position: relative;
+}
+
+.login-container::before,
+.login-container::after {
+  content: '';
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  background-color: var(--login-circle);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.login-container::before {
+  top: -25px;
+  left: -25px;
+}
+
+.login-container::after {
+  bottom: -25px;
+  right: -25px;
+}
+
+.login-container h2 {
+  color: var(--login-btn-text);
+  margin-bottom: 1.5rem;
+  z-index: 1;
+  position: relative;
+}
+
+.login-container form {
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  position: relative;
+}
+
+.login-container input[type="email"],
+.login-container input[type="password"] {
+  background-color: var(--login-input-bg);
+  border: none;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  color: var(--login-btn-text);
+  border-radius: 5px;
+}
+
+.login-container button {
+  background-color: var(--login-btn-bg);
+  color: var(--login-btn-text);
+  border: none;
+  padding: 0.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.login-container button:hover {
+  background-color: var(--login-btn-bg-hover);
+  color: var(--login-btn-text-hover);
+}
+
+nav h1 {
+  color: var(--color-background);
+}
+
+nav p {
+  color: var(--color-background);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+nav li {
+  margin: 1rem 0;
+}
+
+nav a {
+  color: var(--color-background);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-light);
+  border-radius: 5px;
+  display: inline-block;
+}
+
+nav a:hover {
+  background-color: var(--color-accent);
+}
+
+/* Recuadros para administrador e invitado */
+.admin-box,
+.guest-box {
+  background-color: var(--color-light);
+  color: var(--color-background);
+  padding: 1rem;
+  border-radius: 5px;
+  margin: 1rem;
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  text-align: center;
+}
+
+.admin-box h2, 
+.guest-box h2 {
+  margin: 0;
+  padding: 0;
+  color: var(--color-background);
+}
+
+/* Fondo de bienvenida */
+.welcome-section {
+  background-color: var(--color-primary);
+  padding: 2rem;
+  border-radius: 10px;
+  color: var(--color-background);
+  text-align: center;
+  width: 100%;
 }

@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+/*import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../services/auth.service';
 import { AuthProvider, useAuth } from '../context/AuthContext';
@@ -33,4 +33,20 @@ function PageRoot() {
   );
 }
 
-export default Root;
+export default Root;*/
+
+// src/routes/Root.jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import AppRoutes from './routes/AppRoutes';
+import './index.css';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <AppRoutes />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+
+
