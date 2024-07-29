@@ -1,12 +1,11 @@
-// src/components/DogForm.jsx
 
 import React, { useState, useEffect } from 'react';
 import { createDog, getDogById, updateDog } from '../services/dog.service';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../index.css';
 
 const DogForm = () => {
-  const [dog, setDog] = useState({ 
+  const [dog, setDog] = useState({
     nombre: '', 
     raza: '', 
     edad: '', 
@@ -16,6 +15,7 @@ const DogForm = () => {
   });
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (id) {
@@ -58,6 +58,14 @@ const DogForm = () => {
     }
   };
 
+  const handleCancel = () => {
+    if (location.state && location.state.from === 'doglist') {
+      navigate('/dogs');
+    } else {
+      navigate('/gestion-perros');
+    }
+  };
+
   return (
     <div className="form-container">
       <h2>{id ? 'Actualizar Perro' : 'Crear Perro'}</h2>
@@ -74,6 +82,7 @@ const DogForm = () => {
         </select>
         <input type="file" name="archivoIdentificacion" onChange={handleChange} />
         <button type="submit">{id ? 'Actualizar' : 'Crear'}</button>
+        <button type="button" onClick={handleCancel}>Cancelar</button>
       </form>
     </div>
   );

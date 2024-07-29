@@ -39,4 +39,3 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   return React.useContext(AuthContext);
 };
-

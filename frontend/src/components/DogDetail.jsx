@@ -1,36 +1,69 @@
-// src/components/DogDetail.jsx
+
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getDogById } from '../services/dog.service';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getDogById, generateDogPdf } from '../services/dog.service';
 import '../index.css';
 
 const DogDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [dog, setDog] = useState(null);
 
   useEffect(() => {
     const fetchDog = async () => {
-      const data = await getDogById(id);
-      setDog(data);
+      try {
+        const data = await getDogById(id);
+        setDog(data);
+      } catch (error) {
+        console.error('Error fetching dog:', error);
+      }
     };
 
     fetchDog();
   }, [id]);
 
+  const handleDownloadPdf = async () => {
+    try {
+      const pdfBlob = await generateDogPdf(id);
+      const url = window.URL.createObjectURL(new Blob([pdfBlob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${dog.nombre}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
+
+  const handleBack = () => {
+    navigate('/dogs');
+  };
+
   if (!dog) {
     return <div>Cargando...</div>;
   }
 
+  const imageUrl = dog.archivoIdentificacion 
+    ? `${import.meta.env.VITE_API_URL}/${dog.archivoIdentificacion}`
+    : '';
+
   return (
     <div className="detail-container">
-      <div></div>
       <h2>Detalles del Perro</h2>
       <p><strong>Nombre:</strong> {dog.nombre}</p>
       <p><strong>Raza:</strong> {dog.raza}</p>
       <p><strong>Edad:</strong> {dog.edad}</p>
       <p><strong>Identificación:</strong> {dog.identificacion}</p>
       <p><strong>Estado de Salud:</strong> {dog.estadoSalud}</p>
-      <img src={dog.archivoIdentificacion} alt="Imagen de identificación del perro" />
+      {dog.archivoIdentificacion && (
+        <img src={imageUrl} alt="Imagen de identificación del perro" />
+      )}
+      <div>   </div>
+      <div>   </div>
+      <button onClick={handleDownloadPdf}>Descargar PDF</button>
+      <button onClick={handleBack}>Volver</button>
     </div>
   );
 };

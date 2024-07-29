@@ -22,6 +22,7 @@ export const login = async ({ email, password }) => {
       // Verifica si el usuario tiene los roles permitidos
       if (roles.includes("user") || roles.includes("admin")) {
         localStorage.setItem('user', JSON.stringify({ email: userEmail, roles }));
+        localStorage.setItem('accessToken', data.data.accessToken);
         axios.defaults.headers.common['Authorization'] = `Bearer ${data.data.accessToken}`;
         console.log('Login successful'); // Indicar que el login fue exitoso
       } else {
@@ -36,6 +37,7 @@ export const login = async ({ email, password }) => {
 
 export const logout = () => {
   localStorage.removeItem('user');
+  localStorage.removeItem('accessToken');
   delete axios.defaults.headers.common['Authorization'];
   cookies.remove('jwt');
 };

@@ -1,12 +1,14 @@
-// src/components/DogList.jsx
+
 import React, { useEffect, useState } from 'react';
 import { getDogs, deleteDog } from '../services/dog.service';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import '../index.css';
 
 const DogList = () => {
   const [dogs, setDogs] = useState([]);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchDogs = async () => {
@@ -22,8 +24,11 @@ const DogList = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    await deleteDog(id);
-    setDogs(dogs.filter(dog => dog._id !== id));
+    const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este perro?");
+    if (confirmDelete) {
+      await deleteDog(id);
+      setDogs(dogs.filter(dog => dog._id !== id));
+    }
   };
 
   const handleDetail = (id) => {
@@ -31,13 +36,12 @@ const DogList = () => {
   };
 
   const handleEdit = (id) => {
-    navigate(`/edit/${id}`);
-  }
+    navigate(`/edit/${id}`, { state: { from: 'doglist' } });
+  };
 
   const handleCancel = () => {
     navigate('/gestion-perros');
   };
-
 
   return (
     <div>
@@ -57,8 +61,12 @@ const DogList = () => {
               <td>{dog.identificacion}</td>
               <td>
                 <button onClick={() => handleDetail(dog._id)}>Detalle</button>
-                <button onClick={() => handleEdit(dog._id)}>Editar</button>
-                <button onClick={() => handleDelete(dog._id)}>Eliminar</button>
+                {user && user.roles.includes('admin') && (
+                  <>
+                    <button onClick={() => handleEdit(dog._id)}>Editar</button>
+                    <button onClick={() => handleDelete(dog._id)}>Eliminar</button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
