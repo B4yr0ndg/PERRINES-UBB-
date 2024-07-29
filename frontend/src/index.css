@@ -1,11 +1,30 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  --color-primary: #2C6C73;
+  --color-secondary: #0B2626;
+  --color-accent: #407364;
+  --color-light: #768C54;
+  --color-background: #F2EDD5;
+  --color-input-bg: #4C8C94;
+  --color-input-text: #F2EDD5;
+  --color-input-hover-bg: #407364;
+  --color-input-hover-text: #F2EDD5;
+  --color-delete: #D9534F;
+
+  --login-bg: #2C6C73;
+  --login-circle: #F2EDD5;
+  --login-input-bg: #0B2626;
+  --login-btn-bg: #407364;
+  --login-btn-text: #F2EDD5;
+  --login-btn-bg-hover: #2C6C73;
+  --login-btn-text-hover: #0B2626;
+
+  font-family: 'Comic Sans MS', cursive, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--color-secondary);
+  background-color: var(--login-bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -14,6 +33,209 @@
   -webkit-text-size-adjust: 100%;
 }
 
+body, html {
+  background-color: var(--login-bg);
+  color: var(--color-secondary);
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
 a {
-  text-decoration: inherit;
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-background);
+}
+
+button {
+  background-color: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  padding: 0.5em 1em;
+  cursor: pointer;
+  border-radius: 0.5em;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0.5em;
+}
+
+button:hover {
+  background-color: var(--color-accent);
+  color: var(--color-secondary);
+}
+
+.button-delete {
+  background-color: var(--color-delete);
+}
+
+.button-delete:hover {
+  background-color: darken(var(--color-delete), 10%);
+}
+
+input, select {
+  border: 1px solid var(--color-secondary);
+  padding: 0.5em;
+  margin: 0.5em 0;
+  width: 100%;
+  color: var(--color-input-text);
+  border-radius: 0.5em;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+select {
+  background-color: var(--color-input-bg);
+}
+
+input {
+  background-color: var(--color-background);
+}
+
+input:hover, select:hover {
+  background-color: var(--color-input-hover-bg);
+  color: var(--color-input-hover-text);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid var(--color-secondary);
+  padding: 0.5em;
+  text-align: left;
+}
+
+th {
+  background-color: var(--color-primary);
+  color: var (--color-background);
+}
+
+td {
+  background-color: var(--color-light);
+}
+
+.form-container {
+  background-color: var(--color-background);
+  border: 1px solid var(--color-secondary);
+  padding: 2em;
+  border-radius: 1em;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px;
+}
+
+.form-container h2 {
+  color: var(--color-primary);
+  margin-bottom: 1em;
+}
+
+.button-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    padding: 1em;
+  }
+
+  input, select {
+    font-size: 1em;
+    padding: 0.75em;
+  }
+
+  button {
+    padding: 0.75em 1.5em;
+    margin: 0.25em;
+  }
+
+  .button-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .button-container button {
+    margin-bottom: 0.5em;
+  }
+}
+
+@media (max-width: 480px) {
+  .form-container {
+    padding: 0.5em;
+  }
+
+  input, select {
+    font-size: 0.9em;
+    padding: 0.5em;
+  }
+
+  button {
+    padding: 0.5em 1em;
+    margin: 0.25em;
+  }
+}
+
+/* Additional CSS for FeedingMenu */
+.feedings-list {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  overflow-x: auto;
+  gap: 20px;
+  width: 100%;
+  padding: 20px 0;
+}
+
+.feeding-card {
+  background-color: var(--color-light);
+  border: 1px solid var(--color-secondary);
+  border-radius: 10px;
+  padding: 20px;
+  width: 300px;
+  min-width: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feeding-card p {
+  margin: 10px 0;
+  color: var(--color-secondary);
+}
+
+.action-button {
+  background-color: var (--color-primary);
+  color: var(--color-background);
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  width: 100%;
+  text-align: center;
+}
+
+.action-button:hover {
+  background-color: var(--color-accent);
+  color: var(--color-secondary);
+}
+
+.action-button-delete {
+  background-color: var(--color-delete);
+  color: var(--color-background);
+}
+
+.action-button-delete:hover {
+  background-color: darken(var(--color-delete), 10%);
 }

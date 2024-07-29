@@ -1,0 +1,85 @@
+.gestion-perros-menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: var(--color-background);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    height: 100%;
+}
+
+.gestion-perros-menu-container h2 {
+    color: var(--color-primary);
+    margin-bottom: 20px;
+}
+
+.banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: var(--color-light);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.banner-section {
+    flex: 1;
+    text-align: center;
+}
+
+.banner-section.image-section {
+    flex: 0 0 100px;
+}
+
+.banner-section.text-section {
+    flex: 1;
+    padding: 0 20px;
+}
+
+.banner-image {
+    max-width: 100%;
+    border-radius: 10px;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.input {
+    padding: 10px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 5px;
+    width: 100%;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.button {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+    flex: 1;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.button:hover {
+    background-color: var(--color-accent);
+    color: var(--color-secondary);
+}
