@@ -8,6 +8,9 @@ import userRoutes from "./user.routes.js";
 /** Enrutador de autenticación */
 import authRoutes from "./auth.routes.js";
 
+/** Enrutador de alimentación */
+import feedingRoutes from "./feeding.routes.js";
+
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
@@ -22,11 +25,12 @@ import feedingRoutes from "./feeding.routes.js";
 
 /** Instancia del enrutador */
 const router = Router();
-
 // Define las rutas para los usuarios /api/usuarios
 router.use("/users", authenticationMiddleware, userRoutes);
 // Define las rutas para la autenticación /api/auth
 router.use("/auth", authRoutes);
+// Define las rutas para la alimentación /alimentacion
+router.use("/feeding", feedingRoutes);
 
 // Define las rutas para el formulario de perro /api/perros
 router.use("/perros", perrosRoutes);
@@ -40,3 +44,4 @@ router.use("/feeding", feedingRoutes);
 
 // Exporta el enrutador
 export default router;
+
