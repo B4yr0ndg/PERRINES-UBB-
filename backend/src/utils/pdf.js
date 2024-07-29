@@ -5,11 +5,11 @@ import Feeding from "../models/feeding.model.js";
 
 /**
  * Genera un PDF con la información de una alimentación específica.
- * @param {String} feedingId - El ID de la alimentación específica.
+ * @param {String} perroId - El ID del perro específico.
  * @returns {Object} - Un objeto con el path del archivo PDF generado y el nombre del archivo.
  */
-export async function generateFeedingPDF(feedingId) {
-    const feeding = await Feeding.findById(feedingId).populate("perro");
+export async function generateFeedingPDF(perroId) {
+    const feeding = await Feeding.findOne({ perro: perroId }).populate("perro");
 
     if (!feeding) {
         throw new Error("Alimentación no encontrada");

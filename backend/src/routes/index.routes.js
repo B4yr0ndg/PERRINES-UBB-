@@ -8,9 +8,6 @@ import userRoutes from "./user.routes.js";
 /** Enrutador de autenticación */
 import authRoutes from "./auth.routes.js";
 
-/** Enrutador de alimentación */
-import feedingRoutes from "./feeding.routes.js";
-
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
@@ -31,16 +28,12 @@ router.use("/users", authenticationMiddleware, userRoutes);
 router.use("/auth", authRoutes);
 // Define las rutas para la alimentación /alimentacion
 router.use("/feeding", feedingRoutes);
-
 // Define las rutas para el formulario de perro /api/perros
 router.use("/perros", perrosRoutes);
 // Define las rutas para las citas veterinarias /api/citas
 router.use("/citas", citaVeterinarioRoutes);
 // Define las rutas para las alertas /api/alerts
 router.use("/alerts", authenticationMiddleware, alertRoutes);
-// Define las rutas para la alimentación /alimentacion
-router.use("/feeding", feedingRoutes);
-
 
 // Exporta el enrutador
 export default router;

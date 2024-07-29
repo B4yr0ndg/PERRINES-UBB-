@@ -38,5 +38,3 @@ router.get("/pdf/:id", validateObjectId, generarPdfPerro);
 
 
 export default router;
-
-

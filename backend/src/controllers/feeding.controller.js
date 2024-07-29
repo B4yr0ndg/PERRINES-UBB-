@@ -91,12 +91,17 @@ export const getFeedingById = async (req, res) => {
  * @param {Object} res - The response object.
  * @returns {Object} All feedings.
  */
-export const getAllFeedings = async (_, res) => {
+export const getAllFeedings = async (req, res) => {
   try {
-    const alimentaciones = await Feeding.find().populate("perro");
-    res.status(200).json(alimentaciones);
+      const alimentaciones = await Feeding.find().populate("perro");
+      if (alimentaciones.length === 0) {
+          return res
+              .status(404)
+              .json({ message: "No se encontraron alimentaciones", data: null });
+      }
+      res.status(200).json({ data: alimentaciones });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+      res.status(500).json({ message: error.message, data: null });
   }
 };
 
