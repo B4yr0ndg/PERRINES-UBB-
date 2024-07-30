@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { createDog, getDogById, updateDog } from '../services/dog.service';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import '../index.css';
-import Navbar from './NavBar';
+import Navbar from '../../src/components/NavBar';
 
 const DogForm = () => {
   const [dog, setDog] = useState({

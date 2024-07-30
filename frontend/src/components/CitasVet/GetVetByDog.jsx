@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getCitasVetByDogId } from '../../services/CitaVet.service';
 import { getDogById } from '../../services/dog.service';
-import NavBar from '../NavBar';
+import Navbar from '../../../src/components/NavBar';
 import '../../index.css';
 
 function DogAppointments() {
@@ -65,7 +65,7 @@ function DogAppointments() {
 
   return (
     <div>
-      <NavBar />
+      <Navbar />
       <div className="menu-principal-container">
         <h2 className='titleC'>Citas para {dog ? dog.nombre : 'el Perro'}</h2>
         {lastCita ? (

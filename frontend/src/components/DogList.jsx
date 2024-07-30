@@ -4,7 +4,7 @@ import { getDogs, deleteDog } from '../services/dog.service';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../index.css';
-import Navbar from './NavBar';
+import Navbar from '../../src/components/NavBar';
 
 const DogList = () => {
   const [dogs, setDogs] = useState([]);

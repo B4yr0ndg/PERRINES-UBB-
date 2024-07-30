@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getDogs } from '../../services/dog.service';
 import { getCitasVetByDogId } from '../../services/CitaVet.service';
-import NavBar from '../NavBar';
+import Navbar from '../../../src/components/NavBar';
 import '../../index.css';
 import { useAuth } from '../../context/AuthContext';
 
@@ -53,7 +53,7 @@ function ShowDogs() {
 
   return (
     <div className='gestion-perros-menu-container'>
-      <NavBar />
+      <Navbar />
       <div className='banner'>
         <div className="banner-section image-section">
           <img src="https://cdn.pixabay.com/photo/2024/02/11/17/14/dogs-8567089_1280.png" alt="Imagen de un perro" className="banner-image" />

@@ -4,7 +4,7 @@ import './GestionPerrosMenu.css';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Navbar from './NavBar';
+import Navbar from '../../src/components/NavBar';
 
 const GestionPerrosMenu = () => {
   const navigate = useNavigate();

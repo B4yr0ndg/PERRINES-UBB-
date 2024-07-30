@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getDogById, generateDogPdf } from '../services/dog.service';
 import '../index.css';
-import Navbar from './NavBar';
+import Navbar from '../../src/components/NavBar';
 
 const DogDetail = () => {
   const { id } = useParams();

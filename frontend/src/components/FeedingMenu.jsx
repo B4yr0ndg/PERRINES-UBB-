@@ -4,7 +4,7 @@ import axios from '../services/root.service';
 import { useAuth } from '../context/AuthContext'; 
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import Navbar from '../components/NavBar';
+import Navbar from '../../src/components/NavBar';
 import './FeedingMenu.css';
 
 const FeedingMenu = () => {
