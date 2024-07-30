@@ -72,6 +72,21 @@ async function getCitaVeterinarioById(id) {
 }
 
 /**
+ * @name getCitaVeterinarioByDogId
+ * @description Obtiene todas las citas veterinarias por id de la mascota
+ * @param id {string} - Id de la cita veterinaria
+ * @returns {Promise<CitaVeterinario|null>}
+ */
+async function getCitaVeterinarioByDogId(id) {
+  try {
+    return await CitaVeterinario.find({ mascota: id }).populate("mascota");
+  } catch (error) {
+    handleError(error, "citaVeterinario.service -> getCitaVeterinarioByDogId");
+  }
+}
+
+
+/**
  * @name updateCitaVeterinario
  * @description Actualiza una cita veterinaria
  * @param id {string} - Id de la cita veterinaria
@@ -110,4 +125,5 @@ export const CitaVeterinarioService = {
   getCitaVeterinarioById,
   updateCitaVeterinario,
   deleteCitaVeterinario,
+  getCitaVeterinarioByDogId,
 };

@@ -11,6 +11,7 @@ import { Resend } from "resend";
 import Mascota from "../models/dog.model.js";
 import citaVetModel from "../models/citaVet.model.js";
 import mongoose from "mongoose";
+import citaVeterinariaBodySchema from "../schema/citaVet.schema.js";
 
 
 const resend = new Resend("re_cBCiaHJD_PdYEvkh7eu8GmbxbM8mUr1XD");
@@ -22,13 +23,14 @@ const resend = new Resend("re_cBCiaHJD_PdYEvkh7eu8GmbxbM8mUr1XD");
  */
 export async function getCitaVeterinario(req, res) {
   try {
-    // Suponiendo que CitaVeterinarioService.getCitaVeterinario devuelve una consulta de Mongoose
     const citas = await CitaVeterinarioService.getCitaVeterinario();
 
     if (citas.length === 0) {
       respondSuccess(req, res, 204); 
     } else {
-      respondSuccess(req, res, 200, citas); 
+      respondSuccess(req, res, 200, citas);
+      const fechaFormateada = evento.fecha.toISOString().split("T")[0];
+      console.log("Fecha formateada:", fechaFormateada); 
     }
   } catch (error) {
     respondError(req, res, 400, error.message); 
@@ -42,10 +44,17 @@ export async function getCitaVeterinario(req, res) {
  */
 export async function createCitaVeterinario(req, res) {
   try {
-    const { mascota, fecha, hora, motivo, email } = req.body;
+    // Validar el cuerpo de la solicitud
+    const { error, value } = citaVeterinariaBodySchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      const errorMessage = error.details.map((detail) => detail.message).join(". ");
+      return respondError(req, res, 400, errorMessage);
+    }
+
+    const { mascota, fecha, motivo, email } = value;
 
     // Verificar si ya existe una cita para la misma mascota en la misma fecha y hora
-    const existingCita = await citaVetModel.findOne({ mascota, fecha, hora });
+    const existingCita = await citaVetModel.findOne({ mascota, fecha });
     if (existingCita) {
       return respondError(req, res, 400, "Ya existe una cita para esta mascota en la misma fecha y hora.");
     }
@@ -56,14 +65,6 @@ export async function createCitaVeterinario(req, res) {
     // Verificar si la fecha de la cita es anterior a la fecha actual
     if (fechaCita.isBefore(fechaActual)) {
       return respondError(req, res, 400, "La fecha de la cita no puede ser anterior a la fecha actual.");
-    }
-
-    // Si la fecha de la cita es hoy, verificar la hora
-    if (fechaCita.isSame(fechaActual, "day")) {
-      const horaActual = moment().format("HH:mm"); // Hora actual en formato HH:mm
-      if (moment(hora, "HH:mm").isBefore(moment(horaActual, "HH:mm"))) { // Comparar las horas
-        return respondError(req, res, 400, "La hora ingresada no puede ser antes de la actual.");
-      }
     }
 
     // Crear la cita veterinaria
@@ -79,29 +80,35 @@ export async function createCitaVeterinario(req, res) {
     
     // Construir el contenido del correo electrónico
     const htmlContent = `
-      <strong>Su solicitud para la cita veterinaria fue exitosa.</strong><br>
-      La cita se agendó para el <strong>${fecha}</strong>.
+      <strong>Solicitud para cita veterinaria.</strong><br>
+      la cita veterinaria fue solicitada para el dia <strong>${fecha}</strong>.
+      a nombre de la mascota con los siguientes datos:
       <br>Rut: ${identificacionMascota}<br>
       Nombre de la mascota: ${nombreMascota}<br>
       Edad: ${edadMascota}<br>
       Raza: ${razaMascota}<br>
       Estado de salud: ${estadoSaludMascota}<br>
       Motivo: ${motivo}
+      una vez confirmada la cita por parte del veterinario, 
+      se le enviara un correo de confirmacion con la fecha y lugar en la que se agendará la cita.
+      <br> <br>------------------------ <br>
+      Este es un mensaje automático, por favor no responda a este correo. <br>
+      en caso de recibir este correo por 2da vez, por favor ignorelo. <br>
     `;
 
     // Enviar correo de confirmación
-    const { data, error } = await resend.emails.send({
+    const { data, error: emailError } = await resend.emails.send({
       from: "Acme <onboarding@resend.dev>",
-      to: email,
+      to: email, // Enviar a cliente y veterinarios
       subject: "Solicitud de cita veterinaria",
       html: htmlContent,
     });
   
-    if (error) {
-      return res.status(400).json({ error });
+    if (emailError) {
+      throw new Error(`Error al enviar el correo de confirmación: ${emailError.message}`);
     }
   
-    res.status(200).json({ data: nuevaCita });
+    respondSuccess(req, res, 200, { data: nuevaCita });
   } catch (error) {
     handleError(error, "citaVeterinario.controller -> createCitaVeterinario");
     respondError(req, res, 500, "No se pudo crear la cita");
@@ -118,16 +125,22 @@ export async function getCitaVeterinarioById(req, res) {
     const { id } = req.params;
     
     const cita = await CitaVeterinarioService.getCitaVeterinarioById(id);
-    cita === null
-      ? respondError(
-          req,
-          res,
-          404,
-          "No se encuentra la cita solicitada",
-          "Not Found",
-          { message: "Verifique el id ingresado" },
-        )
-      : respondSuccess(req, res, 200, cita);
+
+    if (cita === null) {
+      return respondError(
+        req,
+        res,
+        404,
+        "No se encuentra la cita solicitada",
+        "Not Found",
+        { message: "Verifique el id ingresado" },
+      );
+    }
+
+    const fechaFormateada = cita.fecha.toISOString().split("T")[0];
+    console.log("Fecha formateada:", fechaFormateada);
+
+    respondSuccess(req, res, 200, cita);
   } catch (error) {
     handleError(
       error,
@@ -138,49 +151,112 @@ export async function getCitaVeterinarioById(req, res) {
 }
 
 /**
+ * Obtiene todas las citas veterinarias por id del perro.
+ * @param {import('express').Request} req - La solicitud HTTP.
+ * @param {import('express').Response} res - La respuesta HTTP.
+ */
+export async function getCitaVeterinarioByDogId(req, res) {
+  try {
+    const { id } = req.params;
+    const citas = await CitaVeterinarioService.getCitaVeterinarioByDogId(id);
+    if (citas.length === 0) {
+      respondSuccess(req, res, 204);
+    } else {
+      respondSuccess(req, res, 200, citas);
+    }
+  } catch (error) {
+    handleError(error, "citaVeterinario.controller -> getCitaVeterinarioByDogId");
+    respondError(req, res, 500, "No se pudo obtener las citas");
+  }
+}
+
+
+/**
  * Actualiza una cita veterinaria por su id.
  * @param {import('express').Request} req - La solicitud HTTP.
  * @param {import('express').Response} res - La respuesta HTTP.
  */
 export async function updateCitaVeterinario(req, res) {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const { id } = req.params;
-    const updatedCita = await CitaVeterinarioService.updateCitaVeterinario(id, req.body);
 
-    // Verifica si la cita fue encontrada y actualizada
+    // Validar el cuerpo de la solicitud
+    const { error, value } = citaVeterinariaBodySchema.validate(req.body, { abortEarly: false });
+    if (error) {
+      const errorMessage = error.details.map((detail) => detail.message).join(". ");
+      return respondError(req, res, 400, errorMessage);
+    }
+
+    const { mascota, fecha, hora, state } = value;
+
+    // Verificar si existe una cita para la misma mascota en la misma fecha 
+    const existingCita = await citaVetModel.findOne({ mascota, hora, fecha, _id: { $ne: id } });
+    if (existingCita) {
+      await session.abortTransaction();
+      session.endSession();
+      return respondError(req, res, 400, "Ya existe una cita para esta mascota en la misma fecha.");
+    }
+
+    // Actualizar la cita veterinaria
+    const updatedCita = await CitaVeterinarioService.updateCitaVeterinario(id, req.body, { session });
+
+    // Verificar si la cita fue encontrada y actualizada
     if (!updatedCita) {
+      await session.abortTransaction();
+      session.endSession();
       return respondError(req, res, 404, "No se encontró la cita solicitada", "Not Found", { message: "Verifique el ID ingresado" });
     }
 
-    // Construye el contenido del correo electrónico con la información actualizada de la cita
-    const { mascota, fecha, hora, motivo, email } = updatedCita;
-    const mascotaDetalle = await Mascota.findById(mascota);
+    // Obtener el nombre de la mascota para el correo electrónico
+    const mascotaDetalle = await Mascota.findById(mascota).session(session);
     const nombreMascota = mascotaDetalle.nombre;
     const fechaFormateada = moment(fecha).format("DD/MM/YYYY");
-    const horaFormateada = moment(hora).format("HH:mm");
 
-    const htmlContent = `
-      <strong>Su cita veterinaria ha sido actualizada.</strong><br>
-      La cita ahora está programada para el <strong>${fechaFormateada}</strong> a las <strong>${horaFormateada}</strong>.<br>
-      Nombre de la mascota: ${nombreMascota}<br>
-      Motivo: ${motivo}
-    `;
+    // Construir el contenido del correo electrónico basado en el estado de la cita
 
+      const htmlContent = `
+        <strong>Cita veterinaria para ${nombreMascota} ha sido ${req.body.state}.</strong><br>
+        La cita programada para el día <strong>${fechaFormateada} a sido ${req.body.state} </strong>.<br>
+        La veterinaria a cargo del caso es:  ${req.body.veterinaria}<br>
+        a continuación se detallan los datos del perro:<br>
+        Datos del perro:<br>
+        Identificación: ${mascotaDetalle.identificacion}<br>
+        Nombre de la mascota: ${nombreMascota}<br>
+        Edad: ${mascotaDetalle.edad}<br>
+        Raza: ${mascotaDetalle.raza}<br>
+        Estado de salud: ${mascotaDetalle.estadoSalud}<br>
+        Motivo: ${req.body.motivo}<br>
+        La veterinaria a cargo del caso es:  ${req.body.veterinaria}<br>
+
+      ------------------------ <br>
+      Este es un mensaje automático, por favor no responda a este correo. <br>
+      en caso de recibir este correo por 2da vez, por favor ignorelo. <br>
+      `;
+  
     // Envía el correo electrónico con el nuevo contenido
-    const { data, error } = await resend.emails.send({
+    const { data, error: emailError } = await resend.emails.send({
       from: "Acme <onboarding@resend.dev>",
-      to: email,
-      subject: "Actualización de cita veterinaria",
+      to: updatedCita.email,
+      subject: `Actualización de cita veterinaria - ${state.charAt(0).toUpperCase() + state.slice(1)}`,
       html: htmlContent,
     });
 
-    if (error) {
-      return res.status(400).json({ error });
+    if (emailError) {
+      await session.abortTransaction();
+      session.endSession();
+      console.error("Error al enviar el correo de actualización:", emailError);
+      return respondError(req, res, 400, "Error enviando el correo de actualización.");
     }
 
-    // Responde al cliente con éxito y los detalles de la cita actualizada
+    // Completar la transacción y responder al cliente con éxito y los detalles de la cita actualizada
+    await session.commitTransaction();
+    session.endSession();
     respondSuccess(req, res, 200, updatedCita);
   } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
     handleError(error, "citaVeterinario.controller -> updateCitaVeterinario");
     respondError(req, res, 500, "No se pudo actualizar la cita");
   }
@@ -195,21 +271,20 @@ export async function deleteCitaVeterinario(req, res) {
   try {
     const { id } = req.params;
     const cita = await CitaVeterinarioService.deleteCitaVeterinario(id);
-    cita === null
-      ? respondError(
-          req,
-          res,
-          404,
-          "No se encontro la cita solicitada",
-          "Not Found",
-          { message: "Verifique el id ingresado" },
-        )
-      : respondSuccess(req, res, 200, cita);
+    if (!cita) {
+      return respondError(
+        req,
+        res,
+        404,
+        "No se encontró la cita solicitada",
+        "Not Found",
+        { message: "Verifique el id ingresado" },
+      );
+    }
+
+    respondSuccess(req, res, 200, cita);
   } catch (error) {
-    handleError(
-      error,
-      "citaVeterinario.controller -> deleteCitaVeterinario",
-    );
+    handleError(error, "citaVeterinario.controller -> deleteCitaVeterinario");
     respondError(req, res, 500, "No se pudo eliminar la cita");
   }
 }

@@ -1,27 +1,41 @@
-import { createContext, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+
+// src/context/AuthContext.jsx
+
+import React, { createContext, useState, useEffect } from 'react';
+import { login, logout } from '../services/auth.service';
 
 const AuthContext = createContext();
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useAuth = () => useContext(AuthContext);
-
-// eslint-disable-next-line react/prop-types
-export function AuthProvider({ children }) {
-  const navigate = useNavigate();
-
-  const user = JSON.parse(localStorage.getItem('user')) || '';
-  const isAuthenticated = user ? true : false;
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate('/auth');
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
-  }, [isAuthenticated, navigate]);
+  }, []);
+
+  const handleLogin = async (email, password) => {
+    await login({ email, password });
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    setUser(null);
+  };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user }}>
+    <AuthContext.Provider value={{ user, handleLogin, handleLogout }}>
       {children}
     </AuthContext.Provider>
   );
-}
+};
+
+export const useAuth = () => {
+  return React.useContext(AuthContext);
+};

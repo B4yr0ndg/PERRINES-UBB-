@@ -19,6 +19,20 @@ const citaVeterinarioSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    state: {
+        type: String,
+        required: true,
+        enum: ["por confirmar", "confirmada", "cancelada"],
+
+    },
+    veterinaria: {
+        type: String,
+        required: false,
+    },
+    diagnostico: {
+        type: String,
+        required: false,
+    },
 });
 
 
