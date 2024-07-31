@@ -3,7 +3,8 @@
   --color-secondary: #0B2626;
   --color-accent: #407364;
   --color-light: #768C54;
-  --color-background: #F2EDD5;
+  /* --color-background: #4180aa; */
+  --color-background: linear-gradient(blue, 10%, pink);
   --color-input-bg: #4C8C94;
   --color-input-text: #F2EDD5;
   --color-input-hover-bg: #407364;
@@ -36,19 +37,23 @@
 body, html {
   background-color: var(--login-bg);
   color: var(--color-secondary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
   width: 100vw;
   margin: 0;
   padding: 0;
+  overflow: hidden;
 }
 
 a {
-  color: var(--color-primary);
+  color: var(--login-btn-text-hover);
   text-decoration: none;
 }
 
 a:hover {
-  color: var(--color-accent);
+  color: var(--login-btn-bg-hover);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -64,6 +69,7 @@ button {
   border-radius: 0.5em;
   transition: background-color 0.3s ease, color 0.3s ease;
   margin: 0.5em;
+
 }
 
 button:hover {
@@ -90,16 +96,16 @@ input, select {
 }
 
 select {
-  background-color: var(--color-input-bg);
+  background-color: var(--color-accent);
 }
 
 input {
-  background-color: var(--color-background);
+  background-color: var(--color-accent);
 }
 
 input:hover, select:hover {
   background-color: var(--color-input-hover-bg);
-  color: var(--color-input-hover-text);
+  color: var(--color-secondary);
 }
 
 table {
@@ -115,7 +121,7 @@ th, td {
 
 th {
   background-color: var(--color-primary);
-  color: var (--color-background);
+  color: var(--color-background);
 }
 
 td {
@@ -130,6 +136,8 @@ td {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 600px;
+  max-height: 90vh; /* Ajusta esto según sea necesario */
+  overflow-y: auto;
 }
 
 .form-container h2 {
@@ -184,7 +192,6 @@ td {
   }
 }
 
-/* Additional CSS for FeedingMenu */
 .feedings-list {
   display: flex;
   flex-wrap: nowrap;
@@ -214,7 +221,7 @@ td {
 }
 
 .action-button {
-  background-color: var (--color-primary);
+  background-color: var(--color-primary);
   color: var(--color-background);
   border: none;
   padding: 10px;
@@ -238,4 +245,357 @@ td {
 
 .action-button-delete:hover {
   background-color: darken(var(--color-delete), 10%);
+}
+ 
+/* nav h1 {
+  color: var(--color-background);
+}
+
+nav p {
+  color: var(--color-background);
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+} */
+
+.BGM {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* nav li {
+  margin: 1rem 0;
+}
+
+nav a {
+  color: var(--color-background);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-light);
+  border-radius: 5px;
+  display: inline-block;
+}
+
+nav a:hover {
+  background-color: var(--color-accent);
+} */
+
+.admin-box, .guest-box {
+  background-color: var(--color-light);
+  color: var(--color-background);
+  padding: 1rem;
+  border-radius: 5px;
+  margin: 1rem;
+  position: relative;
+  display: inline-block;
+  width: 200px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.admin-box h2, .guest-box h2 {
+  margin: 0;
+  padding: 0;
+  color: var(--color-background);
+}
+
+.welcome-section {
+  background-color: var(--color-primary);
+  padding: 2rem;
+  border-radius: 10px;
+  color: var(--color-background);
+  text-align: center;
+  width: 100%;
+}
+
+h2, h3 {
+  margin: 16px;
+  text-align: center;
+  color: var(--color-background);
+}
+
+.appointments-container {
+  width: 98%;
+  margin: 20px;
+  padding: 20px;
+  background-color: var(--color-secondary);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.cita-item {
+  background-color: #fff;
+  margin: 10px;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s, box-shadow 0.3s;
+  flex: 1 0 21%;
+  display: flex;
+  flex-direction: column;
+}
+
+.cita-item p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.cita-item strong {
+  color: #333;
+}
+
+.cita-item:hover {
+  background-color: #eaeaea;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cita-item.last-cita {
+  border-left: 5px solid #4CAF50;
+  border: 2px solid var(--color-primary);
+  background-color: var(--color-light);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 60%;
+  margin: 0 auto;
+}
+
+.filter-container {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.filter-container label {
+  margin-right: 10px;
+  color: #555;
+}
+
+.filter-container select {
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+}
+
+.scrollable-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  padding: 16px;
+  overflow-y: auto;
+  height: calc(100vh - 80px);
+  box-sizing: border-box;
+  color: #000;
+}
+
+.scrollable-container .card {
+  flex: 1 1 calc(25% - 32px);
+  margin: 16px;
+  background-color: var(--color-light);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.scrollable-container .card:hover {
+  transform: translateY(-5px);
+}
+
+.scrollable-container .card h3 {
+  margin: 0;
+  padding: 10px;
+  font-size: 18px;
+  text-align: center;
+  color: var(--color-background);
+}
+
+.scrollable-container .card p {
+  margin: 0;
+  padding: 10px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--color-secondary);
+}
+
+body {
+  background: rgb(34,193,195);
+background: -moz-radial-gradient(circle, rgba(34,193,195,1) 0%, rgba(23,101,14,0.9191877434567577) 100%);
+background: -webkit-radial-gradient(circle, rgba(34,193,195,1) 0%, rgba(23,101,14,0.9191877434567577) 100%);
+background: radial-gradient(circle, rgba(34,193,195,1) 0%, rgba(23,101,14,0.9191877434567577) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#22c1c3",endColorstr="#17650e",GradientType=1);
+  font-family: Arial, sans-serif; /* Fuente */
+}
+
+h2 {
+  color: #fff; /* Color del texto del título */
+  text-align: center; /* Alineación del título */
+  margin-top: 20px; /* Margen superior */
+}
+
+.dog-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.dog-card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  width: 200px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dog-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dog-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.new-appointment-button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.new-appointment-button:hover {
+  background-color: #0056b3;
+}
+
+h3 {
+  color: #ffffff; /* Color del texto del subtítulo */
+  text-align: center; /* Alineación del subtítulo */
+}
+
+.titleC {
+  color: #292626; /* Color del texto del subtítulo */
+  text-align: center; /* Alineación del subtítulo */
+}
+
+.citas-grid {
+  display: flex;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.cita-item {
+  background-color: var(--color-light);
+  border: 1px solid var(--color-light);
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.cita-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.last-cita {
+  background-color: #d4edda;
+  border-color: #c3e6cb;
+}
+
+.button-cancel {
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.button-cancel:hover {
+  background-color: #c82333;
+}
+
+.button-accept {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.button-accept:hover {
+  background-color: #218838;
+}
+
+.edit-cita-container {
+  width: 80%;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: var(--color-secondary);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-cita-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.edit-cita-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+input[type="date"],
+textarea,
+select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.edit-cita-container button {
+  padding: 10px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.edit-cita-container button:hover {
+  background-color: var(--color-primary-dark);
 }

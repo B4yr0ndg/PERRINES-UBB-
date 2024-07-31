@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { getAllFeedings, getFeedingById } from '../services/feeding.service';
+import { getAllFeedings, getFeedingById, downloadAllFeedingsPDF } from '../services/feeding.service';
 import axios from '../services/root.service';
-import { useAuth } from '../context/AuthContext'; // Importa el contexto de autenticación
+import { useAuth } from '../context/AuthContext'; 
 import { useNavigate, Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import Navbar from '../components/Navbar'; // Asegúrate de ajustar la ruta según sea necesario
+import Navbar from '../../src/components/Navbar';
 import './FeedingMenu.css';
 
 const FeedingMenu = () => {
-    const { user } = useAuth(); // Obtén la información del usuario desde el contexto de autenticación
+    const { user } = useAuth(); 
     const [allFeedings, setAllFeedings] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -94,18 +94,16 @@ const FeedingMenu = () => {
         });
     };
 
-    const handleDownloadPDF = async (perroId, perroNombre) => {
+    const handleDownloadAllPDF = async () => {
         try {
             console.log('Iniciando descarga del PDF...');
-            const response = await axios.get(`/feeding/descargar/${perroId}`, {
-                responseType: 'blob',
-            });
-            console.log('Datos recibidos del backend:', response.data);
+            const response = await downloadAllFeedingsPDF();
+            console.log('Datos recibidos del backend:', response);
     
-            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const url = window.URL.createObjectURL(new Blob([response]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `${perroNombre} alimentacion.pdf`);
+            link.setAttribute('download', `todas_las_alimentaciones.pdf`);
             document.body.appendChild(link);
             link.click();
     
@@ -130,9 +128,9 @@ const FeedingMenu = () => {
     }, [searchResults]);
 
     return (
-        <div>
+        <div className="gestion-alimentacion-menu-container">
             <Navbar />
-            <div className="gestion-alimentacion-menu-container">
+            <div >
                 <h2>GESTIÓN DE ALIMENTACIÓN</h2>
                 <div className="menu-actions">
                     {user?.roles.includes('admin') && (
@@ -141,6 +139,7 @@ const FeedingMenu = () => {
                         </Link>
                     )}
                     <button onClick={handleSearchByName} className="search-button">Buscar por Nombre</button>
+                    <button onClick={handleDownloadAllPDF} className="download-button">Descargar PDF alimentaciones</button>
                 </div>
                 <h2>Todas las Alimentaciones</h2>
                 {loading ? (
@@ -158,7 +157,6 @@ const FeedingMenu = () => {
                                 <p><strong>Horarios:</strong> {feeding.horariosAlimentacion.join(', ')}</p>
                                 <p><strong>Límite Diario:</strong> {feeding.limiteDiario}g</p>
                                 <p><strong>Horarios Permitidos:</strong> {feeding.horariosPermitidos.join(', ')}</p>
-                                <button type="button" className="action-button" onClick={() => handleDownloadPDF(feeding.perro._id, feeding.perro.nombre)}>Descargar PDF</button>
                                 {user?.roles.includes('admin') && (
                                     <>
                                         <button className="action-button" onClick={handleActualizar}>Actualizar</button>
@@ -184,7 +182,6 @@ const FeedingMenu = () => {
                                     <p><strong>Horarios:</strong> {feeding.horariosAlimentacion.join(', ')}</p>
                                     <p><strong>Límite Diario:</strong> {feeding.limiteDiario}g</p>
                                     <p><strong>Horarios Permitidos:</strong> {feeding.horariosPermitidos.join(', ')}</p>
-                                    <button type="button" className="action-button" onClick={() => handleDownloadPDF(feeding.perro._id, feeding.perro.nombre)}>Descargar PDF</button>
                                     {user?.roles.includes('admin') && (
                                         <>
                                             <button className="action-button" onClick={handleActualizar}>Actualizar</button>

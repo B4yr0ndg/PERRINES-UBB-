@@ -26,7 +26,7 @@ export const deleteFeeding = async (id) => {
   return data;
 };
 
-export const downloadFeedingPDF = async (id) => {
-  const { data } = await axios.get(`/feeding/descargar/${id}`, { responseType: 'blob' });
+export const downloadAllFeedingsPDF = async () => {
+  const { data } = await axios.get('/feeding/descargar', { responseType: 'blob' });
   return data;
 };
