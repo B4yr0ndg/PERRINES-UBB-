@@ -25,15 +25,19 @@ const feedingSchema = Joi.object({
     "string.max": "La frecuencia no debe tener más de 50 caracteres.",
     "any.required": "La frecuencia es requerida.",
   }),
-  horariosPermitidos: Joi.array().items(Joi.string()).min(1).max(10).required().messages({
+  // eslint-disable-next-line max-len
+  horariosPermitidos: Joi.array().items(Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)).min(1).max(10).required().messages({
     "array.min": "Debe haber al menos 1 horario permitido.",
     "array.max": "No debe haber más de 10 horarios permitidos.",
     "any.required": "Los horarios permitidos son requeridos.",
+    "string.pattern.base": "El horario permitido debe estar en formato de 24 horas.",
   }),
-  horariosAlimentacion: Joi.array().items(Joi.string()).min(1).max(10).required().messages({
+  // eslint-disable-next-line max-len
+  horariosAlimentacion: Joi.array().items(Joi.string().pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)).min(1).max(10).required().messages({
     "array.min": "Debe haber al menos 1 horario de alimentación.",
     "array.max": "No debe haber más de 10 horarios de alimentación.",
     "any.required": "Los horarios de alimentación son requeridos.",
+    "string.pattern.base": "El horario de alimentación debe estar en formato de 24 horas.",
   }),
   limiteDiario: Joi.number().min(1).max(1000).required().messages({
     "number.base": "El límite diario debe ser un número.",

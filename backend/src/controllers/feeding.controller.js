@@ -1,6 +1,6 @@
 import Feeding from "../models/feeding.model.js";
 import Dog from "../models/dog.model.js";
-import { generateFeedingPDF } from "../utils/pdf.js";
+import { generateAllFeedingsPDF } from "../utils/pdf.js";
 import fs from "fs";
 import feedingSchema from "../schema/feeding.schema.js";
 
@@ -179,15 +179,15 @@ export const deleteFeeding = async (req, res) => {
   }
 };
 
-// Descargar PDF de la alimentación
+// Descargar PDF de todas las alimentaciones
 /**
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
  * @returns {Object} The generated PDF.
  */
-export const downloadFeedingPDF = async (req, res) => {
+export const downloadAllFeedingsPDF = async (req, res) => {
   try {
-    const { filePath, fileName } = await generateFeedingPDF(req.params.id);
+    const { filePath, fileName } = await generateAllFeedingsPDF();
 
     // Agregar un retraso de 2 segundos (2000 milisegundos) antes de la descarga
     setTimeout(() => {
@@ -209,4 +209,4 @@ export const downloadFeedingPDF = async (req, res) => {
 };
 
 // eslint-disable-next-line max-len
-export default { createFeeding, getFeedingById, getAllFeedings, updateFeeding, deleteFeeding, downloadFeedingPDF };
+export default { createFeeding, getFeedingById, getAllFeedings, updateFeeding, deleteFeeding, downloadAllFeedingsPDF };
